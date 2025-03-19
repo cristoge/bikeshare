@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
-import { getBikes } from '../services/bike';
+import { getUsers } from '../services/user';
 const TestScreen = () => {
   return (
     <View> 
-      <Button title="Obtener Usuarios" onPress={getBikes} />
+      <Button title="Obtener Usuarios" onPress={getUsers} />
     </View>
   );
 };

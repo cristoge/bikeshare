@@ -18,3 +18,15 @@ export const createLocation = async () => {
 
   return data
 }
+export const getLocation = async () => {
+  const { data, error } = await supabase
+    .from('location')
+    .select('*')
+
+  if (error) {
+    console.error('Error fetching location:', error)
+    return null
+  }
+  console.log(data)
+  return data
+}
