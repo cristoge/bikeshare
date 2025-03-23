@@ -1,6 +1,7 @@
-import { generateTimestampz } from "../utils/generateTimestampz";
+import { generateTimestampz,calculateEndTime } from "../utils/generateTimestampz";
 import { supabase } from "./supabase";
 
+//la funcion para crear el alquiler funciona
 const createRent = async (userId: string, bikeId: string) => {
   try {
     const date = generateTimestampz();
@@ -16,23 +17,29 @@ const createRent = async (userId: string, bikeId: string) => {
     console.error("Error creating rent:", error);
   }
 };
-
+/*este crea la reserva, la diferencia es el status y que en este crea 
+un tiempo de reserva y una hora de fecha limite
+*/
 export const createReservation = async (userId: string, bikeId: string) => {
   try {
-    const date = generateTimestampz();
+    const reservationStart = generateTimestampz();
+    const reservationEnd = calculateEndTime(reservationStart);
     const { error } = await supabase.from("rent").insert({
       user_id: userId,
       bike_id: bikeId,
       status: "reserved",
-      reservation_start: date,
+      reservation_start: reservationStart,
+      reservation_end: reservationEnd,
     });
-
     if (error) throw error;
   } catch (error) {
     console.error("Error creating reservation:", error);
   }
 };
-
+/*dependiendo de el estado de la reserva, si esta ongoing lo que hace es
+pasarle el momento actual y guardarlo en la base de datos como tiempo final
+en cambio si esta en reserva lo que hace es empezar el tiempo inicial
+*/
 export const handleRentStatus = async (id: string, status: string) => {
   try {
     const date = generateTimestampz();

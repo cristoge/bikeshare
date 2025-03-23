@@ -1,93 +1,41 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
-import { login } from '../services/user';
-import { changeDni } from '../services/user';
-const LoginScreen = () => {
-  const [dni, setDni] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, Alert } from 'react-native';
+import * as Location from 'expo-location';
 
-  const handleLogin = async () => {
-    setLoading(true);
-    const result = await login(email, password);
-    setLoading(false);
-    
-    if (result) {
-      Alert.alert('Inicio de sesión exitoso', `Bienvenido ${result.user.email}`);
-    } else {
-      Alert.alert('Error', 'Correo o contraseña incorrectos');
+export function LoginScreen() {
+  const [location, setLocation] = useState<any>(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se requiere permiso de localización para esta función');
+        return;
+      }
+    })();
+  }, []);
+
+  const getLocation = async () => {
+    try {
+      let loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc);
+      console.log(loc);
+    } catch (error) {
+      console.log('Error al obtener la localización', error);
     }
   };
-  const handleChangeDni = async () => {
-    const result = await changeDni(dni);
-    if (result) {
-      Alert.alert('DNI actualizado', 'Tu DNI ha sido actualizado correctamente.');
-    } else {
-      Alert.alert('Error', 'No se pudo actualizar el DNI.');
-    }
-  };
+
   return (
-    <View >
-      <Text style={styles.title}>Iniciar Sesión</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Correo Electrónico"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <Button title={loading ? 'Cargando...' : 'Enviar'} onPress={handleLogin} disabled={loading} />
-      <Text style={styles.title}>Actualizar DNI</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Nuevo DNI"
-        keyboardType="numeric"
-        value={dni}
-        onChangeText={setDni}
-      />
-      <TouchableOpacity style={styles.button} onPress={handleChangeDni}>
-        <Text style={styles.buttonText}>Actualizar DNI</Text>
-      </TouchableOpacity>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Obtener localización" onPress={getLocation} />
+      {location && (
+        <Text>
+          Latitud: {location.coords.latitude}, Longitud: {location.coords.longitude}
+        </Text>
+      )}
     </View>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  input: {
-    width: '100%',
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 10,
-    padding: 10,
-    borderRadius: 5,
-  },
-  button: {
-    backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    width: '100%',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'red',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default LoginScreen;
