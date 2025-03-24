@@ -26,7 +26,7 @@ export function LoginScreen() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View>
       <Button title="Obtener localización" onPress={getLocation} />
       {location && (
         <Text>
