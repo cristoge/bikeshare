@@ -85,3 +85,14 @@ export const changeName = async (dni: string) => {
   console.log('User updated successfully:', data)
   return data
 }
+export const forgotPassword = async (email: string) => {
+  const { data, error } = await supabase.auth.resetPasswordForEmail(email)
+
+  if (error) {
+    console.error('Error enviando email de recuperación de contraseña:', error)
+    return null
+  }
+
+  console.log('Email de recuperación enviado:', data)
+  return data
+}
