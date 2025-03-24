@@ -1,44 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
-import { getUsers } from '../services/user';
-import { User } from '../types/dataTypes';
+import { View, Text, Button, Alert } from 'react-native';
+import * as Location from 'expo-location';
 
-const TestScreen = () => {
-  const [users, setUsers] = useState<User[]>([]);
+export function LoginScreen() {
+  const [location, setLocation] = useState<any>(null);
 
-  const fetchUsers = async () => {
-    const data = await getUsers();
-    if (data) {
-      setUsers(data);
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permiso denegado', 'Se requiere permiso de localización para esta función');
+        return;
+      }
+    })();
+  }, []);
+
+  const getLocation = async () => {
+    try {
+      let loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc);
+      console.log(loc);
+    } catch (error) {
+      console.log('Error al obtener la localización', error);
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
   return (
     <View>
-      <Button title="Obtener Usuarios" onPress={fetchUsers} />
-      <FlatList
-        data={users}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View>
-            <Text style={styles.orangeText}>{item.id}</Text>
-            <Text>{item.role}</Text>
-            <Text>{item.email}</Text>
-          </View>
-        )}
-      />
+      <Button title="Obtener localización" onPress={getLocation} />
+      {location && (
+        <Text>
+          Latitud: {location.coords.latitude}, Longitud: {location.coords.longitude}
+        </Text>
+      )}
     </View>
   );
-};
+}
 
-const styles = StyleSheet.create({
-  orangeText: {
-    color: 'orange',
-  },
-});
 
-export default TestScreen;
+export default LoginScreen;
