@@ -1,20 +1,19 @@
-import React from 'react';
-import { View } from 'react-native';
-import { UserStats } from '@/src/components/totalStats';
-import { RecentTrips } from '@/src/components/recentTrips';
-import WelcomeScreen from '@/src/components/Welcome';
+import { View, Text, Button } from "react-native";
+import { useRouter } from "expo-router";
 
-const PracticaTs = () => {
-  const userData = {
-    totalTrips: 42,
-    co2Saved: 15.8,
+const Practica = () => {
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.push("/(auth)/login");
   };
 
   return (
     <View>
-      <UserStats userData={userData} />
+      <Text>Página de práctica</Text>
+      <Button title="Ir a Ejemplo 2" onPress={handleNavigate} />
     </View>
-  );  
+  );
 };
 
-export default PracticaTs;
+export default Practica;
