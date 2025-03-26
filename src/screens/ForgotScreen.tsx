@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, Image } from 'react-native';
 import { forgotPassword } from '../services/user';
-const RememberPasswordScreen = () => {
+const ForgotScreen = () => {
   const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleRememberPassword = async () => {
+  const handleForgotPassword = async () => {
     if (!email) {
       Alert.alert('Error', 'Por favor ingresa tu DNI y email para recuperar la contraseña.');
       return;
@@ -24,7 +24,7 @@ const RememberPasswordScreen = () => {
   return (
     <View >
       <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Remember password</Text>
+      <Text style={styles.title}>Forgot password</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -35,7 +35,7 @@ const RememberPasswordScreen = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={handleRememberPassword}
+        onPress={handleForgotPassword}
         disabled={loading}
       >
         <Text style={styles.buttonText}>
@@ -83,11 +83,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  rememberButton: {
-    color: '#10B88A',
-    textAlign: 'center',
-    marginTop: 15,
-  },
   logo: {
     alignSelf: 'center',
     width: 200,
@@ -97,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RememberPasswordScreen;
+export default ForgotScreen;
