@@ -1,14 +1,23 @@
-// src/screens/TestScreen.tsx
-import React, { useEffect, useState } from 'react'
-import { View, Text, FlatList, ActivityIndicator } from 'react-native'
-import TestScreen from '@/src/screens/TestScreen';
+import { View, Text, Button } from "react-native";
+import { useRouter } from "expo-router";
 
-const PracticaTs = () => {
+const Practica = () => {
+  const router = useRouter();
+
+  const handleNavigate = () => {
+    router.push("/(auth)/login");
+  };
+  // return (
+  //   <View>
+  //     <StationCard name="Station Name" latitude={41.3851} longitude={2.1734} distance="100m" />
+  //   </View>
+  // );
   return (
     <View>
-      <TestScreen />
+      <Text>Página de práctica</Text>
+      <Button title="Iniciar Sesion" onPress={handleNavigate} />
     </View>
   );
 };
 
-export default PracticaTs;
+export default Practica;
