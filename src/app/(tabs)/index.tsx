@@ -1,11 +1,11 @@
 import React from 'react';
 import { AppRegistry, Text, View } from 'react-native';
-import RememberScreen from '@/src/screens/ForgotScreen';
-
+import WelcomeScreen from '@/src/components/Welcome';
+import ProfileScreen from '@/src/screens/ProfileScreen';
 const App = () => {
   return (
         <View>
-          <RememberScreen />
+          <ProfileScreen />
         </View>
       );
 };

@@ -11,6 +11,12 @@ const AuthLayout = () => {
           headerStyle:{backgroundColor:'#0FB88A'},
         }} 
       />
+      <Stack.Screen 
+        name="register"
+        options={{ 
+          title: 'Forgot Password', 
+          headerStyle:{backgroundColor:'#0FB88A'},
+        }}/>
     </Stack>
   );
 };

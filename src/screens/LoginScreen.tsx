@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image  } from 'react-native';
 import { login } from '../services/user';
 import { changeDni } from '../services/user';
+import { useRouter } from 'expo-router';
 const LoginScreen = () => {
+  const router = useRouter()
   const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const handleNavigate = () => {
+    router.push("/(auth)/register");
+  }
   const handleLogin = async () => {
     setLoading(true);
     const result = await login(email, password);
@@ -55,7 +59,7 @@ const LoginScreen = () => {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.rememberButton}>Remember password</Text>
+        <Text style={styles.rememberButton} onPress={handleNavigate}>Remember password</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,12 +1,9 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-
+import ForgotScreen from '@/src/screens/ForgotScreen';
 const RegisterScreen = () => {
   return (
-    <View>
-      <Text>Register</Text>
-      <Button title="Registrar" onPress={() => {}} />
-    </View>
+    <ForgotScreen />
   );
 };
 
