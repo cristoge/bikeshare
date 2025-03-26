@@ -7,11 +7,15 @@ const Practica = () => {
   const handleNavigate = () => {
     router.push("/(auth)/login");
   };
-
+  // return (
+  //   <View>
+  //     <StationCard name="Station Name" latitude={41.3851} longitude={2.1734} distance="100m" />
+  //   </View>
+  // );
   return (
     <View>
       <Text>Página de práctica</Text>
-      <Button title="Ir a Ejemplo 2" onPress={handleNavigate} />
+      <Button title="Iniciar Sesion" onPress={handleNavigate} />
     </View>
   );
 };
