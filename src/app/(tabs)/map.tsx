@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import MapScreen from "@/src/screens/MapScreen"; // Asegúrate de que la ruta es correcta
+import MapScreen from "@/src/screens/MapScreen"; 
 
 const MapTs = () => {
   return (
