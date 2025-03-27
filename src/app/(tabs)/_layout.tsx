@@ -15,7 +15,7 @@ const TabsLayout = () =>{
     }} 
   />
   <Tabs.Screen 
-    name="practica" 
+    name="account" 
     options={{
       title:'account',
       tabBarIcon: () => (

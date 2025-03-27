@@ -1,10 +1,13 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserStats } from '../components/totalStats';
-import { RecentTrips } from '../components/recentTrips';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Usando FontAwesome para los iconos
-
+import { useRouter } from 'expo-router';
 export default function ProfileScreen() {
+  const router = useRouter();
+  const handleNavigate = () => {
+    router.push("/(auth)/login");
+  }
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
@@ -16,10 +19,10 @@ export default function ProfileScreen() {
         </View>
         {/* Lista de botones */}
         <View style={styles.buttonList}>
-          <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => handleNavigate()}>
             <Icon name="user" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Profile</Text>
-          </TouchableOpacity>
+            </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity style={styles.button}>
             <Icon name="history" size={20} color="#333" style={styles.icon} />
@@ -99,8 +102,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   logoutButton: {
-    backgroundColor: '#e74c3c',
-    paddingVertical: 12,
     paddingHorizontal: 20,
     marginTop: 20,
     borderRadius: 8,

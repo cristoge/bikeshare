@@ -1,7 +1,8 @@
 import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
+import ProfileScreen from "@/src/screens/ProfileScreen";
 
-const Practica = () => {
+const Account = () => {
   const router = useRouter();
 
   const handleNavigate = () => {
@@ -14,10 +15,9 @@ const Practica = () => {
   // );
   return (
     <View>
-      <Text>Página de práctica</Text>
-      <Button title="Iniciar Sesion" onPress={handleNavigate} />
+      <ProfileScreen />
     </View>
   );
 };
 
-export default Practica;
+export default Account;

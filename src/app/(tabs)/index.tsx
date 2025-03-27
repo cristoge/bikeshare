@@ -5,7 +5,7 @@ import ProfileScreen from '@/src/screens/ProfileScreen';
 const App = () => {
   return (
         <View>
-          <ProfileScreen />
+          <WelcomeScreen />
         </View>
       );
 };
