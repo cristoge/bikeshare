@@ -6,7 +6,7 @@ export const getBikes = async () => {
     .select(`
       id,
       status,
-      model: model_id (model_name),
+      model,
       location: current_location_id (
         latitude,
         longitude,

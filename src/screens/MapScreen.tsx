@@ -5,27 +5,33 @@ import {
   Modal, 
   Text, 
   TouchableOpacity, 
-  ActivityIndicator 
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 
+// Iconos (asegúrate de tener estos archivos)
+const bikeIcons = {
+  Normal: require('@/src/assets/images/bike.png'),
+  Electrica: require('@/src/assets/images/electric-bike.png'),
+  Tandem: require('@/src/assets/images/tandem.png')
+};
+
 const MapScreen = () => {
-  
   const [allBikes, setAllBikes] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedBikeType, setSelectedBikeType] = useState(null);
 
-  
   const initialRegion = {
-    latitude: 41.3851,  
+    latitude: 41.3851,
     longitude: 2.1734,
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
   };
 
-  
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -40,7 +46,6 @@ const MapScreen = () => {
     loadData();
   }, []);
 
-  
   const getUniqueLocations = () => {
     const locationsMap = {};
     allBikes.forEach(bike => {
@@ -62,15 +67,23 @@ const MapScreen = () => {
     );
   };
 
+  // Función actualizada para el nuevo modelo
   const countBikesByType = (bikes) => {
-    return {
-      normal: bikes.filter(b => b.model?.model_name === 'Normal').length,
-      electric: bikes.filter(b => b.model?.model_name === 'Electica').length,
-      tandem: bikes.filter(b => b.model?.model_name === 'Tandem').length
+    const counts = {
+      Normal: 0,
+      Electrica: 0,
+      Tandem: 0
     };
+    
+    bikes.forEach(bike => {
+      if (bike.model === 'normal') counts.Normal++;
+      if (bike.model === 'electric') counts.Electrica++;
+      if (bike.model === 'tandem') counts.Tandem++;
+    });
+    
+    return counts;
   };
 
-  
   if (loading) {
     return (
       <View style={styles.centered}>
@@ -81,7 +94,6 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Mapa principal */}
       <MapView
         style={styles.map}
         initialRegion={initialRegion}
@@ -96,13 +108,13 @@ const MapScreen = () => {
             }}
             onPress={() => {
               setSelectedLocation(location);
+              setSelectedBikeType(null);
               setModalVisible(true);
             }}
           />
         ))}
       </MapView>
 
-      {/* Modal de detalles - VERSIÓN CORREGIDA */}
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -122,29 +134,68 @@ const MapScreen = () => {
                 
                 <View style={styles.bikesContainer}>
                   {Object.entries(countBikesByType(getBikesAtLocation(selectedLocation))).map(([type, count]) => (
-                    <View key={type} style={styles.bikeRow}>
-                      <Text style={styles.bikeType}>
-                        {type.charAt(0).toUpperCase() + type.slice(1)}:
-                      </Text>
-                      <Text style={styles.bikeCount}>{count}</Text>
-                    </View>
+                    <TouchableOpacity
+                      key={type}
+                      style={[
+                        styles.bikeItem,
+                        selectedBikeType === type && styles.selectedBikeItem,
+                        count === 0 && styles.disabledBikeItem
+                      ]}
+                      onPress={() => count > 0 && setSelectedBikeType(type)}
+                      disabled={count === 0}
+                    >
+                      <View style={styles.bikeInfo}>
+                        <Image 
+                          source={bikeIcons[type]} 
+                          style={styles.bikeIcon} 
+                        />
+                        <Text style={styles.bikeTypeText}>
+                          {type}: {count}
+                        </Text>
+                      </View>
+                      {selectedBikeType === type && (
+                        <View style={styles.selectionIndicator}>
+                          <Text style={styles.checkIcon}>✓</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
                   ))}
                 </View>
               </>
             )}
             
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
-            >
-              <Text style={styles.closeButtonText}>Cerrar</Text>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.actionButton,
+                  styles.continueButton,
+                  !selectedBikeType && styles.disabledButton
+                ]}
+                onPress={() => {
+                  if (selectedBikeType) {
+                    
+                    setModalVisible(false);
+                  }
+                }}
+                disabled={!selectedBikeType}
+              >
+                <Text style={styles.buttonText}>Continuar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.actionButton, styles.cancelButton]}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonTextCancel}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
@@ -161,23 +212,27 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-end', 
   },
   modalContainer: {
-    width: '80%',
+    width: '100%', 
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderTopLeftRadius: 20, 
+    borderTopRightRadius: 20,
     padding: 20,
+    position: 'absolute',
+    bottom: 0, 
+    alignSelf: 'flex-end',
+    paddingBottom: 20, 
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: 'bold',
     marginBottom: 5,
     textAlign: 'center',
   },
   modalSubtitle: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#666',
     marginBottom: 20,
     textAlign: 'center',
@@ -185,29 +240,77 @@ const styles = StyleSheet.create({
   bikesContainer: {
     marginVertical: 10,
   },
-  bikeRow: {
+  bikeItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    alignItems: 'center',
+    padding: 15,
+    marginVertical: 5,
+    borderRadius: 8,
+    backgroundColor: '#f8f8f8',
   },
-  bikeType: {
-    fontSize: 16,
+  selectedBikeItem: {
+    backgroundColor: '#e3f2fd',
+    borderWidth: 1,
+    borderColor: '#2196F3',
   },
-  bikeCount: {
-    fontSize: 16,
+  disabledBikeItem: {
+    opacity: 0.5,
+  },
+  bikeInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bikeIcon: {
+    width: 54,
+    height: 54,
+    marginRight: 12,
+    resizeMode: 'contain',
+  },
+  bikeTypeText: {
+    fontSize: 24,
+  },
+  selectionIndicator: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#2196F3',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkIcon: {
+    color: 'white',
     fontWeight: 'bold',
   },
-  closeButton: {
+  buttonContainer: {
     marginTop: 20,
-    backgroundColor: '#2196F3',
+  },
+  actionButton: {
     padding: 12,
     borderRadius: 5,
     alignItems: 'center',
+    marginVertical: 5,
   },
-  closeButtonText: {
+  continueButton: {
+    backgroundColor: '#4CAF50',
+  },
+  cancelButton: {
+    color: 'red',
+    backgroundColor: 'white',
+    borderColor: 'red',
+    
+  },
+  disabledButton: {
+    backgroundColor: '#cccccc',
+  },
+  buttonText: {
+    fontSize: 24,
     color: 'white',
+    fontWeight: 'bold',
+  },
+  buttonTextCancel: {
+    fontSize: 24,
+    color: 'red',
     fontWeight: 'bold',
   },
 });
