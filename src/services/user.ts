@@ -1,6 +1,6 @@
 import { supabase } from "./supabase"
 import useUserStore from "../stores/userStore" // Adjust the path as necessary
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 export const getUsers = async () => {
   const { data, error } = await supabase
     .from('user')
@@ -31,60 +31,54 @@ export const login = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password
-  })
+  });
 
   if (error) {
-    console.error('Error logging in:', error)
-    return null
+    console.error('Error logging in:', error);
+    return null;
   }
-  useUserStore.setState({ user: data.user })
-  console.log('esto es el store:', useUserStore.getState());
-  return data
+
+  // Obtener datos adicionales del usuario de la tabla 'user' (vinculada con el user de supabase)
+  const { data: userData, error: userError } = await supabase
+    .from('user') 
+    .select('*') 
+    .eq('email', email) 
+    .single();
+
+  if (userError) {
+    console.error('Error fetching user data:', userError);
+    return null;
+  }
+
+  const userName = userData?.name || email.split('@')[0];
+  const dni = userData?.dni 
+  // Si no tiene nombre, usa la parte del correo antes de '@'
+  
+  useUserStore.setState({ user: { ...data.user, name: userName,dni:dni } });
+  
+  console.log('Usuario logueado:', userData);
+  return data;
+};
+
+
+export const loadUserFromStorage = async () => {
+  const userString = await AsyncStorage.getItem('user')
+
+  if (userString) {
+    const user = JSON.parse(userString)
+    useUserStore.setState({ user }) 
+    return user
+  }
+
+  return null
 }
+export const logout = async () => {
+  await supabase.auth.signOut()
+  await AsyncStorage.removeItem('user')
+  useUserStore.setState({ user: null })
+}
+
 //funciona
-export const changeDni = async (dni: string) => {
-  const user = useUserStore.getState().user
-
-  if (!user?.id) {
-    console.error('No user found in store')
-    return null
-  }
-
-  const { data, error } = await supabase
-    .from('user')
-    .update({ dni })
-    .eq('id', user.id)
-
-  if (error) {
-    console.error('Error updating user:', error)
-    return null
-  }
-
-  console.log('User updated successfully:', data)
-  return data
-}
-//falta implementar que se pueda cambiar tanto el nombre, como la foto de perfil
-export const changeName = async (dni: string) => {
-  const user = useUserStore.getState().user
-
-  if (!user?.id) {
-    console.error('No user found in store')
-    return null
-  }
-
-  const { data, error } = await supabase
-    .from('user')
-    .update({ name })
-    .eq('id', user.id)
-
-  if (error) {
-    console.error('Error updating user:', error)
-    return null
-  }
-
-  console.log('User updated successfully:', data)
-  return data
-}
 export const forgotPassword = async (email: string) => {
   const { data, error } = await supabase.auth.resetPasswordForEmail(email)
 

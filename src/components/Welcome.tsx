@@ -3,14 +3,16 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
+import useUserStore from '../stores/userStore'; // Asegúrate de tener la importación correcta
 
 const API_KEY = 'd6eed58cf552ee0bcc8d9c5d68d24bdf'; // Reemplaza con tu clave de OpenWeatherMap
 
-interface WelcomeScreenProps {
-  nombre?: string;
-}
+export default function WelcomeScreen() {
+  // Obtén el usuario desde el store
+  const user = useUserStore((state) => state.user);
+  // Usa el nombre si existe, o "Usuario" como fallback
+  const userName = user?.name || "Usuario";
 
-export default function WelcomeScreen({ nombre = "Usuario" }: WelcomeScreenProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [weatherData, setWeatherData] = useState({
     location: "Desconocido",
@@ -64,7 +66,7 @@ export default function WelcomeScreen({ nombre = "Usuario" }: WelcomeScreenProps
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
         <Text style={styles.welcomeText}>¡Bienvenido,</Text>
-        <Text style={styles.nameText}>{nombre}!</Text>
+        <Text style={styles.nameText}>{userName}!</Text>
       </View>
 
       {/* Motivational Quote */}
@@ -85,11 +87,12 @@ export default function WelcomeScreen({ nombre = "Usuario" }: WelcomeScreenProps
           <Text style={styles.temperatureText}>{weatherData.temperature}°C</Text>
         </View>
       </View>
-<View style={styles.quoteContainer}>
-  <Text style={styles.quoteText}>
-    "La movilidad sostenible comienza con un solo paso."
-  </Text>
-</View>
+
+      <View style={styles.quoteContainer}>
+        <Text style={styles.quoteText}>
+          "La movilidad sostenible comienza con un solo paso."
+        </Text>
+      </View>
     </SafeAreaView>
   );
 }

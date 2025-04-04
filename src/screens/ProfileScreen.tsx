@@ -3,8 +3,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserStats } from '../components/totalStats';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Usando FontAwesome para los iconos
 import { useRouter } from 'expo-router';
+import useUserStore from '../stores/userStore';
+
 export default function ProfileScreen() {
   const router = useRouter();
+  const user = useUserStore((state) => state.user);
+  const userName = user?.name || "Usuario"; 
   const handleNavigate = () => {
     router.push("/(auth)/login");
   }
@@ -12,7 +16,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.header}>
-          <Text style={styles.name}>Hi, User</Text>
+          <Text style={styles.name}>Hi,{userName}</Text>
         </View>
         <View>
           <UserStats userData={{ totalTrips: 120, co2Saved: 45 }} />

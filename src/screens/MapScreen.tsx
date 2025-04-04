@@ -10,16 +10,15 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 import { getLocation } from '@/src/services/location';
+
 interface Bike {
   id: string;
-  model_id: string;
   current_location_id: string;
   status: 'available' | 'unavailable' | 'in_use';
   location: Location;
-  model: {
-    model_name: 'Normal' | 'Electrica' | 'Tandem';
-  };
+  model: 'tandem' | 'normal' | 'electric';
 }
+
 interface Location {
   id: string;
   latitude: number;
@@ -46,7 +45,6 @@ const MapScreen = () => {
       try {
         setLoading(true);
         const bikeData = await getBikes();
-        console.log('el numero de bicicletas es:', bikeData?.length);
         setBikes(bikeData || []);
         const locationData = await getLocation();
         setLocations(locationData || []);
@@ -60,13 +58,14 @@ const MapScreen = () => {
     loadBikesAndLocations();
   }, []);
   
-  const countBikesAtLocation = (locationId: string) => {
-    const bikesAtLocation = bikes.filter(bike => {
-      console.log(`Comparando ubicación de bicicleta ${bike.current_location_id} con ubicación seleccionada ${locationId}`);
-      return bike.current_location_id === locationId && bike.status === 'available';
+  const countBikesByTypeAtLocation = (locationId: string) => {
+    const bikeTypes = { tandem: 0, normal: 0, electric: 0 };
+    bikes.forEach((bike) => {
+      if (bike.current_location_id === locationId && bike.status === 'available') {
+        bikeTypes[bike.model]++;
+      }
     });
-    console.log(`Bicicletas disponibles en la estación ${locationId}:`, bikesAtLocation.length);
-    return bikesAtLocation.length;
+    return bikeTypes;
   };
 
   if (loading) {
@@ -84,9 +83,9 @@ const MapScreen = () => {
         initialRegion={initialRegion}
         showsUserLocation={true}
       >
-        {locations.map((location, index) => (
+        {locations.map((location) => (
           <Marker
-            key={index}
+            key={location.id}
             coordinate={{
               latitude: location.latitude,
               longitude: location.longitude,
@@ -108,12 +107,17 @@ const MapScreen = () => {
         >
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.stationName}>
-                {selectedLocation.location_name}
-              </Text>
-              <Text style={styles.bikeCount}>
-                Total de bicicletas disponibles: {countBikesAtLocation(selectedLocation.id)}
-              </Text>
+              <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
+              {(() => {
+                const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
+                return (
+                  <>
+                    <Text style={styles.bikeCount}>Tandem: {bikeCounts.tandem}</Text>
+                    <Text style={styles.bikeCount}>Normal: {bikeCounts.normal}</Text>
+                    <Text style={styles.bikeCount}>Eléctrica: {bikeCounts.electric}</Text>
+                  </>
+                );
+              })()}
               <Button title="Cerrar" onPress={() => setModalVisible(false)} />
             </View>
           </View>
@@ -124,8 +128,7 @@ const MapScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-  },
+  container: {},
   centered: {
     flex: 1,
     justifyContent: 'center',

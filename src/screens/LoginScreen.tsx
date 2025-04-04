@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity, Image  } from 'react-native';
 import { login } from '../services/user';
-import { changeDni } from '../services/user';
+
 import { useRouter } from 'expo-router';
 const LoginScreen = () => {
   const router = useRouter()
-  const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,16 +18,9 @@ const LoginScreen = () => {
     
     if (result) {
       Alert.alert('Inicio de sesión exitoso', `Bienvenido ${result.user.email}`);
+      router.replace('/(tabs)'); // 🔁 esto reemplaza la pantalla de login
     } else {
       Alert.alert('Error', 'Correo o contraseña incorrectos');
-    }
-  };
-  const handleChangeDni = async () => {
-    const result = await changeDni(dni);
-    if (result) {
-      Alert.alert('DNI actualizado', 'Tu DNI ha sido actualizado correctamente.');
-    } else {
-      Alert.alert('Error', 'No se pudo actualizar el DNI.');
     }
   };
   return (
