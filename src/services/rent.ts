@@ -1,6 +1,6 @@
 import { generateTimestampz,calculateEndTime } from "../utils/generateTimestampz";
 import { supabase } from "./supabase";
-
+import { changeBikeStatus } from "./bike";
 //la funcion para crear el alquiler funciona
 const createRent = async (userId: string, bikeId: string) => {
   try {
@@ -11,7 +11,8 @@ const createRent = async (userId: string, bikeId: string) => {
       start_date: date,
       status: "ongoing",
     });
-    
+    // Cambiar el estado de la bicicleta a "in_use"
+    await changeBikeStatus(bikeId, "in_use");
     if (error) throw error;
   } catch (error) {
     console.error("Error creating rent:", error);
@@ -31,6 +32,8 @@ export const createReservation = async (userId: string, bikeId: string) => {
       reservation_start: reservationStart,
       reservation_end: reservationEnd,
     });
+    // Cambiar el estado de la bicicleta a "reserved"
+    await changeBikeStatus(bikeId, "reserved");
     if (error) throw error;
   } catch (error) {
     console.error("Error creating reservation:", error);

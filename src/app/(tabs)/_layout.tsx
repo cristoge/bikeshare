@@ -31,6 +31,7 @@ const TabsLayout = () =>{
   <Tabs.Screen 
     name="account" 
     options={{
+      headerShown: false,
       title:'account',
       tabBarIcon: () => (
         <Image 

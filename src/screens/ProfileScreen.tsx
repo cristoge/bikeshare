@@ -10,8 +10,13 @@ export default function ProfileScreen() {
   const user = useUserStore((state) => state.user);
   const userName = user?.name || "Usuario"; 
   const handleNavigate = () => {
-    router.push("/(auth)/login");
-  }
+    if (!user) {
+      router.push("/(auth)/login"); // o la ruta de tu pantalla de login
+    } else {
+      router.push("/(options)/profileCard");
+    }
+  };
+  
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
