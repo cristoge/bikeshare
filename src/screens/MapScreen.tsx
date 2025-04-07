@@ -5,11 +5,20 @@ import {
   Modal,
   Text,
   ActivityIndicator,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Image,
   Button
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 import { getLocation } from '@/src/services/location';
+
+const bikeIcons = {
+  Normal: require('@/src/assets/images/bike.png'),
+  Electric: require('@/src/assets/images/electric-bike.png'),
+  Tandem: require('@/src/assets/images/tandem.png'),
+};
 
 interface Bike {
   id: string;
@@ -25,13 +34,13 @@ interface Location {
   longitude: number;
   location_name: string;
 }
-
 const MapScreen = () => {
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedBikeType, setSelectedBikeType] = useState<'normal' | 'electric' | 'tandem' | null>(null);
 
   const initialRegion = {
     latitude: 41.3851,
@@ -57,7 +66,7 @@ const MapScreen = () => {
 
     loadBikesAndLocations();
   }, []);
-  
+
   const countBikesByTypeAtLocation = (locationId: string) => {
     const bikeTypes = { tandem: 0, normal: 0, electric: 0 };
     bikes.forEach((bike) => {
@@ -66,6 +75,10 @@ const MapScreen = () => {
       }
     });
     return bikeTypes;
+  };
+
+  const handleSelectBikeType = (type: 'normal' | 'electric' | 'tandem') => {
+    setSelectedBikeType(type);
   };
 
   if (loading) {
@@ -105,22 +118,52 @@ const MapScreen = () => {
           animationType="slide"
           onRequestClose={() => setModalVisible(false)}
         >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
-              {(() => {
-                const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
-                return (
-                  <>
-                    <Text style={styles.bikeCount}>Tandem: {bikeCounts.tandem}</Text>
-                    <Text style={styles.bikeCount}>Normal: {bikeCounts.normal}</Text>
-                    <Text style={styles.bikeCount}>Eléctrica: {bikeCounts.electric}</Text>
-                  </>
-                );
-              })()}
-              <Button title="Cerrar" onPress={() => setModalVisible(false)} />
+          <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+            <View style={styles.modalContainer}>
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
+                  {(() => {
+                    const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
+                    return (
+                      <View style={styles.bikeOptionsColumn}>
+                        {(['normal', 'electric', 'tandem'] as const).map((type) => {
+                          const label = type.charAt(0).toUpperCase() + type.slice(1);
+                          const isSelected = selectedBikeType === type;
+                          return (
+                            <TouchableOpacity
+                              key={type}
+                              style={styles.bikeOptionRow}
+                              onPress={() => handleSelectBikeType(type)}
+                            >
+                              <View style={styles.bikeInfo}>
+                                <Image
+                                  source={bikeIcons[label as keyof typeof bikeIcons]}
+                                  style={styles.bikeIcon}
+                                />
+                                <Text style={styles.bikeLabel}>
+                                  {label}: {bikeCounts[type]}
+                                </Text>
+                              </View>
+                              <View
+                                style={[
+                                  styles.radioButton,
+                                  isSelected ? styles.selectedRadioButton : styles.unselectedRadioButton,
+                                ]}
+                              >
+                                {isSelected && <View style={styles.innerCircle} />}
+                              </View>
+                            </TouchableOpacity>
+                          );
+                        })}
+                      </View>
+                    );
+                  })()}
+                  <Button title="Continue" onPress={() => {}} />
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         </Modal>
       )}
     </View>
@@ -152,14 +195,58 @@ const styles = StyleSheet.create({
   stationName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
   },
-  bikeCount: {
-    fontSize: 16,
-    marginBottom: 10,
-    textAlign: 'center',
+  bikeOptionsColumn: {
+    flexDirection: 'column',
+    marginBottom: 20,
+  },
+  bikeOptionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  bikeInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  bikeLabel: {
+    fontSize: 17,
+    marginLeft: 12,
+    fontWeight: 'bold',
+  },
+  bikeIcon: {
+    width: 40,
+    height: 40,
+  },
+  radioButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
+  unselectedRadioButton: {
+    borderColor: '#ccc',
+    backgroundColor: 'white',
+  },
+  selectedRadioButton: {
+    borderColor: '#0FB88A',
+    backgroundColor: '#F0FFF4',
+  },
+  innerCircle: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#0FB88A',
   },
 });
 
 export default MapScreen;
+
