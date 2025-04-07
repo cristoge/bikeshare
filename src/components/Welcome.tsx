@@ -41,7 +41,7 @@ export default function WelcomeScreen() {
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
-      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=es&appid=${API_KEY}`);
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=en&appid=${API_KEY}`);
       const data = await response.json();
       setWeatherData({
         location: data.name,
@@ -54,7 +54,7 @@ export default function WelcomeScreen() {
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-GB', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -65,7 +65,7 @@ export default function WelcomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.welcomeContainer}>
-        <Text style={styles.welcomeText}>¡Bienvenido,</Text>
+        <Text style={styles.welcomeText}>Welcome,</Text>
         <Text style={styles.nameText}>{userName}!</Text>
       </View>
 
@@ -74,15 +74,15 @@ export default function WelcomeScreen() {
       <View style={styles.card}>
         <View style={styles.locationContainer}>
           <MaterialCommunityIcons name="map-marker" size={24} color="#FF6B6B" />
-          <Text style={styles.locationText}>{weatherData.location}</Text>
+            <Text style={[styles.locationText, { fontWeight: 'bold' }]}>{weatherData.location}</Text>
         </View>
-        
+      
         <Text style={styles.dateText}>{formatDate(currentDate)}</Text>
         
         <View style={styles.weatherContainer}>
           <View style={styles.weatherInfo}>
             <MaterialCommunityIcons name="weather-cloudy" size={48} color="#FFB100" />
-            <Text style={styles.conditionText}>{weatherData.condition}</Text>
+            <Text style={[styles.conditionText, { fontWeight: 'bold' }]}>{weatherData.condition}</Text>
           </View>
           <Text style={styles.temperatureText}>{weatherData.temperature}°C</Text>
         </View>

@@ -8,8 +8,12 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
-import { createUser} from '../services/user';
+import { createUser } from '../services/user';
 import { useRouter } from 'expo-router';
 
 const RegisterScreen = () => {
@@ -20,70 +24,95 @@ const RegisterScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const handleRegister = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Por favor completa todos los campos.');
+    if (!name || !email || !password) {
+      Alert.alert('Error', 'Please fill in all the fields.');
       return;
     }
-    
+
     setLoading(true);
-    const result = await createUser(email, password);
+    const result = await createUser(email, password, name);
     setLoading(false);
 
     if (result) {
-      Alert.alert('Registro exitoso', `Bienvenido ${name}`);
+      Alert.alert('Account Created', 'Please log in to continue.');
       router.replace('/(tabs)');
     } else {
-      Alert.alert('Error', 'No se pudo crear la cuenta. Verificá los datos e intentá de nuevo.');
+      Alert.alert('Error', 'Could not create the account. Please check your details and try again.');
     }
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Crear cuenta</Text>
-      <Text style={styles.subtitle}>
-        Completá los datos para registrarte y empezar a usar la app.
-      </Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.inner}>
+            <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>
+              Fill in the details to register and start using the app.
+            </Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Correo electrónico"
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-        placeholderTextColor="#aaa"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        placeholderTextColor="#aaa"
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Full Name"
+              value={name}
+              onChangeText={setName}
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Email Address"
+              keyboardType="email-address"
+              value={email}
+              onChangeText={setEmail}
+              placeholderTextColor="#aaa"
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              placeholderTextColor="#aaa"
+            />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleRegister}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Registrarse'}</Text>
-      </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={handleRegister}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Registrarse'}</Text>
+            </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
-        <Text style={styles.loginLink}>¿Ya tenés cuenta? Iniciá sesión</Text>
-      </TouchableOpacity>
-    </ScrollView>
+            <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+              <Text style={styles.loginLink}>Already have an account? Log in</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 60,
-    paddingHorizontal: 30,
-    backgroundColor: '#fff',
     flexGrow: 1,
+    backgroundColor: '#fff',
+  },
+  inner: {
+    flexGrow: 1,
+    minHeight: 900, 
+    paddingVertical: 30,
+    paddingHorizontal: 30,
     alignItems: 'center',
+    justifyContent: 'flex-start', 
   },
   logo: {
     width: 160,

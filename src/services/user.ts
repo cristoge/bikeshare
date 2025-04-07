@@ -14,18 +14,31 @@ export const getUsers = async () => {
   return data
 }
 //funciona 
-export const createUser = async (email: string, password: string) => {
+export const createUser = async (email: string, password: string, name: string) => {
   const { data, error } = await supabase.auth.signUp({
     email,
     password
   })
 
-  if (error) {
+  if (error || !data.user) {
     console.error('Error creating user:', error)
     return null
-  } 
-  return data
+  }
+
+  const { error: updateError } = await supabase
+    .from('user')
+    .update({ name: name })
+    .eq('id', data.user.id)
+
+  if (updateError) {
+    console.error('Error updating user name:', updateError)
+    return null
+  }
+
+  return data.user
 }
+
+
 //al hacer el login lo que hace es guardar la informacion del usuario en una variable global y eso hace que se pueda acceder desde toda la aplicación.
 export const login = async (email: string, password: string) => {
   const { data, error } = await supabase.auth.signInWithPassword({

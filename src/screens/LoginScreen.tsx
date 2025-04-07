@@ -63,7 +63,7 @@ const LoginScreen = () => {
       <TouchableOpacity onPress={handleNavigate}>
         <Text style={styles.registerLink}>Don't have an account? Sign up</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+      <TouchableOpacity onPress={() => router.push('/(auth)/forgot')}>
         <Text style={styles.registerLink}>Forgot Password?</Text>
       </TouchableOpacity>
     </ScrollView>

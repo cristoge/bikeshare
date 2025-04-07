@@ -21,7 +21,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.header}>
-          <Text style={styles.name}>Hi,{userName}</Text>
+          <Text style={styles.name}>Hi, {userName}</Text>
         </View>
         <View>
           <UserStats userData={{ totalTrips: 120, co2Saved: 45 }} />
