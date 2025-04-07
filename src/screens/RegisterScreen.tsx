@@ -9,35 +9,42 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import { forgotPassword } from '../services/user';
+import { createUser} from '../services/user';
+import { useRouter } from 'expo-router';
 
-const ForgotScreen = () => {
+const RegisterScreen = () => {
+  const router = useRouter();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleForgotPassword = async () => {
-    if (!email) {
-      Alert.alert('Error', 'Por favor ingresa tu correo electrónico.');
+  const handleRegister = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Por favor completa todos los campos.');
       return;
     }
-
+    
     setLoading(true);
-    const result = await forgotPassword(email);
+    const result = await createUser(email, password);
     setLoading(false);
 
-    Alert.alert(
-      'Success',
-      'We have sent you an email to recover your password. Please also check your spam folder.'
-    );
+    if (result) {
+      Alert.alert('Registro exitoso', `Bienvenido ${name}`);
+      router.replace('/(tabs)');
+    } else {
+      Alert.alert('Error', 'No se pudo crear la cuenta. Verificá los datos e intentá de nuevo.');
+    }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={require('../assets/images/logo.png')} style={styles.logo} />
-      <Text style={styles.title}>Forgot your password?</Text>
+      <Text style={styles.title}>Crear cuenta</Text>
       <Text style={styles.subtitle}>
-        Enter your email and we will send you instructions to recover it.
+        Completá los datos para registrarte y empezar a usar la app.
       </Text>
+
       <TextInput
         style={styles.input}
         placeholder="Correo electrónico"
@@ -46,13 +53,25 @@ const ForgotScreen = () => {
         onChangeText={setEmail}
         placeholderTextColor="#aaa"
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        placeholderTextColor="#aaa"
+      />
 
       <TouchableOpacity
         style={styles.button}
-        onPress={handleForgotPassword}
+        onPress={handleRegister}
         disabled={loading}
       >
-        <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Enviar'}</Text>
+        <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Registrarse'}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => router.push("/(auth)/login")}>
+        <Text style={styles.loginLink}>¿Ya tenés cuenta? Iniciá sesión</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -94,7 +113,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 15,
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 15,
     backgroundColor: '#F9F9F9',
     color: '#333',
   },
@@ -105,12 +124,18 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  loginLink: {
+    color: '#10B88A',
+    marginTop: 20,
+    fontSize: 14,
+  },
 });
 
-export default ForgotScreen;
+export default RegisterScreen;

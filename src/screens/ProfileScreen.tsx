@@ -1,17 +1,17 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { UserStats } from '../components/totalStats';
-import Icon from 'react-native-vector-icons/FontAwesome'; // Usando FontAwesome para los iconos
+import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { useRouter } from 'expo-router';
 import useUserStore from '../stores/userStore';
-
+import { logout } from '../services/user';
 export default function ProfileScreen() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const userName = user?.name || "Usuario"; 
   const handleNavigate = () => {
     if (!user) {
-      router.push("/(auth)/login"); // o la ruta de tu pantalla de login
+      router.push("/(auth)/login"); 
     } else {
       router.push("/(options)/profileCard");
     }
@@ -65,7 +65,13 @@ export default function ProfileScreen() {
         </View>
 
         {/* Botón de log out al final */}
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={async () => {
+            await logout();
+            alert("You have logged out successfully!");
+          }}
+        >
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -80,6 +86,8 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'flex-start',
     paddingVertical: 0,
+    paddingTop: 40,
+    paddingBottom: 20,
     paddingHorizontal: 20,
   },
   name: {

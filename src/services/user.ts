@@ -53,9 +53,10 @@ export const login = async (email: string, password: string) => {
   const userName = userData?.name || email.split('@')[0];
   const dni = userData?.dni 
   // Si no tiene nombre, usa la parte del correo antes de '@'
-  
-  useUserStore.setState({ user: { ...data.user, name: userName,dni:dni } });
-  
+  const finalUser = { ...data.user, name: userName, dni: dni };
+
+  useUserStore.setState({ user: finalUser }); // Guardar el usuario en el store
+  await AsyncStorage.setItem('user', JSON.stringify(finalUser)); // Guardar el usuario en AsyncStorage
   console.log('Usuario logueado:', userData);
   return data;
 };

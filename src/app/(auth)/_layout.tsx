@@ -7,12 +7,18 @@ const AuthLayout = () => {
         name="login"
 
         options={{ 
-          title: 'Iniciar Sesión', 
+          title: 'Log in', 
           headerStyle:{backgroundColor:'#0FB88A'},
         }} 
       />
       <Stack.Screen 
         name="register"
+        options={{ 
+          title: 'Sign up', 
+          headerStyle:{backgroundColor:'#0FB88A'},
+        }}/>
+      <Stack.Screen
+        name="forgot"
         options={{ 
           title: 'Forgot Password', 
           headerStyle:{backgroundColor:'#0FB88A'},

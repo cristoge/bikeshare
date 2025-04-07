@@ -1,10 +1,10 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-import ForgotScreen from '@/src/screens/ForgotScreen';
-const RegisterScreen = () => {
+import RegisterScreen from '@/src/screens/RegisterScreen';
+const RegisterScreenn = () => {
   return (
-    <ForgotScreen />
+    <RegisterScreen/>
   );
 };
 
-export default RegisterScreen;
+export default RegisterScreenn;
