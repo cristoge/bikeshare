@@ -10,6 +10,20 @@ const OptionsLayout = () => {
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />
+      <Stack.Screen 
+      name="contact"
+      options={{ 
+        title: 'Contact', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen 
+      name="help"
+      options={{ 
+        title: 'Help', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
     </Stack>
   );
 };
