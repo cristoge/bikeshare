@@ -12,32 +12,35 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Modal,
+  TouchableHighlight
 } from 'react-native';
-import { createUser } from '../services/user';
+import { registerAndLogin } from '../services/user'; 
 import { useRouter } from 'expo-router';
 
 const RegisterScreen = () => {
   const router = useRouter();
   const [name, setName] = useState('');
+  const [dni, setDni] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);  // Estado de la modal
 
   const handleRegister = async () => {
-    if (!name || !email || !password) {
+    if (!name || !dni || !email || !password) {
       Alert.alert('Error', 'Please fill in all the fields.');
       return;
     }
 
     setLoading(true);
-    const result = await createUser(email, password, name);
+    const result = await registerAndLogin(email, password, name, dni);
     setLoading(false);
 
     if (result) {
-      Alert.alert('Account Created', 'Please log in to continue.');
       router.replace('/(tabs)');
     } else {
-      Alert.alert('Error', 'Could not create the account. Please check your details and try again.');
+      Alert.alert('Error', 'Could not create the account. Please try again.');
     }
   };
 
@@ -66,6 +69,18 @@ const RegisterScreen = () => {
               onChangeText={setName}
               placeholderTextColor="#aaa"
             />
+
+            <View style={styles.dniContainer}>
+              <TextInput
+                style={styles.input}
+                placeholder="DNI"
+                value={dni}
+                onChangeText={setDni}
+                placeholderTextColor="#aaa"
+                keyboardType="numeric"
+              />
+            </View>
+
             <TextInput
               style={styles.input}
               placeholder="Email Address"
@@ -83,6 +98,13 @@ const RegisterScreen = () => {
               placeholderTextColor="#aaa"
             />
 
+            
+            <View style={styles.whyContainer}>
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
+                <Text style={styles.whyText}>Why we need your DNI</Text>
+              </TouchableOpacity>
+            </View>
+
             <TouchableOpacity
               style={styles.button}
               onPress={handleRegister}
@@ -95,6 +117,29 @@ const RegisterScreen = () => {
               <Text style={styles.loginLink}>Already have an account? Log in</Text>
             </TouchableOpacity>
           </View>
+
+          {/* Modal para mostrar la información */}
+          <Modal
+            visible={modalVisible}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Why we need your DNI</Text>
+                <Text style={styles.modalText}>
+                  We require your DNI to verify your identity and ensure the security of your account.
+                </Text>
+                <TouchableHighlight
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={styles.closeButtonText}>Close</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
+          </Modal>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -108,7 +153,7 @@ const styles = StyleSheet.create({
   },
   inner: {
     flexGrow: 1,
-    minHeight: 900, 
+    minHeight: 1200,
     paddingVertical: 30,
     paddingHorizontal: 30,
     alignItems: 'center',
@@ -146,6 +191,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
     color: '#333',
   },
+  dniContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+  },
+  whyContainer: {
+    width: '100%',
+    alignItems: 'flex-end',  
+    marginBottom: 10,
+  },
+  whyText: {
+    color: '#10B88A',
+    fontSize: 13,  
+  },
   button: {
     width: '100%',
     height: 48,
@@ -164,6 +223,41 @@ const styles = StyleSheet.create({
     color: '#10B88A',
     marginTop: 20,
     fontSize: 14,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 20,
+    width: '80%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: '#10B88A',
+    paddingVertical: 10,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
 });
 

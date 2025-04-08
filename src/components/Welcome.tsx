@@ -4,8 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore'; // Asegúrate de tener la importación correcta
-
-const API_KEY = 'd6eed58cf552ee0bcc8d9c5d68d24bdf'; // Reemplaza con tu clave de OpenWeatherMap
+const API_KEY = process.env.EXPO_PUBLIC_WEATHER||''
 
 export default function WelcomeScreen() {
   // Obtén el usuario desde el store
@@ -49,7 +48,8 @@ export default function WelcomeScreen() {
         condition: data.weather[0].description,
       });
     } catch (error) {
-      console.error("Error fetching weather data:", error);
+
+      console.error("Error fetching weather data:",API_KEY );
     }
   };
 
