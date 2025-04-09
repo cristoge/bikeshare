@@ -13,6 +13,7 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 import { getLocation } from '@/src/services/location';
+import { useRouter } from 'expo-router';
 
 const bikeIcons = {
   Normal: require('@/src/assets/images/bike.png'),
@@ -35,6 +36,7 @@ interface Location {
   location_name: string;
 }
 const MapScreen = () => {
+  const router = useRouter();
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
@@ -48,7 +50,9 @@ const MapScreen = () => {
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
   };
-
+  const navigateToEjemplo = () => {
+    router.push("/(options)/reservation");
+  }
   useEffect(() => {
     const loadBikesAndLocations = async () => {
       try {
@@ -159,7 +163,9 @@ const MapScreen = () => {
                       </View>
                     );
                   })()}
-                  <Button title="Continue" onPress={() => {}} />
+                  <Button title="Continue" onPress={() => {navigateToEjemplo();
+                    setModalVisible(false);
+                  }} />
                 </View>
               </TouchableWithoutFeedback>
             </View>
