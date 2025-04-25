@@ -42,7 +42,7 @@ export default function ReservationScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}
       showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>*** BIKE SHARE RECEIPT ***</Text>
+        <Text style={styles.title}>BIKE SHARE RECEIPT</Text>
         <Text style={styles.subText}>You're about to reserve a bike</Text>
 
         <View style={styles.card}>
