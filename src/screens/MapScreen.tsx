@@ -127,6 +127,12 @@ const MapScreen = () => {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => {}}>
                 <View style={styles.modalContent}>
+                  <TouchableOpacity 
+                    style={styles.closeButton} 
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={styles.closeButtonText}>X</Text>
+                  </TouchableOpacity>
                   <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
                   {(() => {
                     const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
@@ -276,6 +282,23 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     color: '#999',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
   },
 });
 
