@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Button
+  Button,
 } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 import { getLocation } from '@/src/services/location';
 import { useRouter } from 'expo-router';
-
+import useUserStore from '../stores/userStore'; // Asegúrate de importar tu store
 const bikeIcons = {
   Normal: require('@/src/assets/images/bike.png'),
   Electric: require('@/src/assets/images/electric-bike.png'),
@@ -35,8 +35,10 @@ interface Location {
   longitude: number;
   location_name: string;
 }
+
 const MapScreen = () => {
   const router = useRouter();
+  const user = useUserStore((state) => state.user); // accede al user desde el store
   const [bikes, setBikes] = useState<Bike[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
@@ -50,9 +52,19 @@ const MapScreen = () => {
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
   };
-  const navigateToEjemplo = () => {
-    router.push("/(options)/reservation");
-  }
+
+  const navigateToEjemplo = (bikeData: Bike) => {
+    router.push({
+      pathname: "/(options)/reservation",
+      params: {
+        bikeId: bikeData.id,
+        model: bikeData.model,
+        locationName: selectedLocation?.location_name || '',
+        userId: user.name, 
+      },
+    });
+  };
+
   useEffect(() => {
     const loadBikesAndLocations = async () => {
       try {
@@ -95,11 +107,7 @@ const MapScreen = () => {
 
   return (
     <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        showsUserLocation={true}
-      >
+      <MapView style={styles.map} initialRegion={initialRegion} showsUserLocation={true}>
         {locations.map((location) => (
           <Marker
             key={location.id}
@@ -163,9 +171,24 @@ const MapScreen = () => {
                       </View>
                     );
                   })()}
-                  <Button title="Continue" onPress={() => {navigateToEjemplo();
-                    setModalVisible(false);
-                  }} />
+                  <Button
+                    title="Continue"
+                    onPress={() => {
+                      const selectedBike = bikes.find(
+                        (bike) =>
+                          bike.current_location_id === selectedLocation.id &&
+                          bike.model === selectedBikeType &&
+                          bike.status === 'available'
+                      );
+
+                      if (selectedBike) {
+                        navigateToEjemplo(selectedBike);
+                        setModalVisible(false);
+                      } else {
+                        alert('No hay bicicletas disponibles de ese tipo.');
+                      }
+                    }}
+                  />
                 </View>
               </TouchableWithoutFeedback>
             </View>

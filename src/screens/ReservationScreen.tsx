@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useLocalSearchParams } from 'expo-router';
 
 const bikeIcons = {
   normal: require('@/src/assets/images/bike.png'),
@@ -18,16 +19,8 @@ const bikeIcons = {
   tandem: require('@/src/assets/images/tandem.png'),
 };
 
-const mockData = {
-  bikeId: 'bike_1234',
-  model: 'tandem' as keyof typeof bikeIcons,
-  location: {
-    location_name: 'Plaça de Catalunya',
-  },
-};
-
 export default function ReservationScreen() {
-  const { bikeId, model, location } = mockData;
+  const { bikeId, model, locationName, userId } = useLocalSearchParams();
   const [mode, setMode] = useState<'rent' | 'reserve'>('rent');
   const [reservationTime, setReservationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -40,21 +33,23 @@ export default function ReservationScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>BIKE SHARE RECEIPT</Text>
         <Text style={styles.subText}>You're about to reserve a bike</Text>
 
         <View style={styles.card}>
-          <Image source={bikeIcons[model]} style={styles.bikeImage} />
-          <Text style={styles.infoText}>Bike ID: {bikeId}</Text>
+          <Image source={bikeIcons[model as keyof typeof bikeIcons]} style={styles.bikeImage} />
+            <Text style={styles.infoText}>Bike ID: {bikeId?.slice(0, 5)}</Text>
+            <Text style={styles.infoText}>
+            <Text style={{ fontWeight: 'bold' }}>User:</Text> {userId}
+            </Text>
         </View>
 
         <View style={styles.separator} />
 
         <View style={styles.card}>
           <Text style={styles.infoTitle}>Pickup Location</Text>
-          <Text style={styles.infoText}>{location.location_name}</Text>
+          <Text style={styles.infoText}>{locationName}</Text>
         </View>
 
         <View style={styles.separator} />
@@ -63,26 +58,16 @@ export default function ReservationScreen() {
           <Text style={styles.infoTitle}>Choose an option</Text>
           <View style={styles.buttonGroup}>
             <TouchableOpacity
-              style={[
-                styles.optionButton,
-                mode === 'rent' && styles.optionButtonActive,
-              ]}
+              style={[styles.optionButton, mode === 'rent' && styles.optionButtonActive]}
               onPress={() => setMode('rent')}
             >
-              <Text style={mode === 'rent' ? styles.activeText : styles.inactiveText}>
-                Rent now
-              </Text>
+              <Text style={mode === 'rent' ? styles.activeText : styles.inactiveText}>Rent now</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.optionButton,
-                mode === 'reserve' && styles.optionButtonActive,
-              ]}
+              style={[styles.optionButton, mode === 'reserve' && styles.optionButtonActive]}
               onPress={() => setMode('reserve')}
             >
-              <Text style={mode === 'reserve' ? styles.activeText : styles.inactiveText}>
-                Reserve for later
-              </Text>
+              <Text style={mode === 'reserve' ? styles.activeText : styles.inactiveText}>Reserve for later</Text>
             </TouchableOpacity>
           </View>
 
@@ -122,14 +107,13 @@ export default function ReservationScreen() {
             }
           }}
         >
-          <Text style={styles.reserveText}>
-            {mode === 'rent' ? 'Rent now' : 'Reserve'}
-          </Text>
+          <Text style={styles.reserveText}>{mode === 'rent' ? 'Rent now' : 'Reserve'}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
