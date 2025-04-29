@@ -60,7 +60,7 @@ const MapScreen = () => {
         bikeId: bikeData.id,
         model: bikeData.model,
         locationName: selectedLocation?.location_name || '',
-        userId: user.name, 
+        userId: user.id, 
       },
     });
   };

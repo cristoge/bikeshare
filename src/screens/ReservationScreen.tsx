@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams } from 'expo-router';
-
+import { createRent,createReservation } from '../services/rent';
 const bikeIcons = {
   normal: require('@/src/assets/images/bike.png'),
   electric: require('@/src/assets/images/electric-bike.png'),
@@ -94,16 +94,23 @@ export default function ReservationScreen() {
 
         <TouchableOpacity
           style={styles.reserveButton}
-          onPress={() => {
-            if (mode === 'rent') {
-              alert(`Rental started for bike ${bikeId}`);
-            } else {
-              alert(
-                `Reservation confirmed for bike ${bikeId} at ${reservationTime.getHours()}:${reservationTime
-                  .getMinutes()
-                  .toString()
-                  .padStart(2, '0')}`
-              );
+          onPress={async () => {
+            try {
+              if (!bikeId || !userId) {
+                alert('Faltan datos necesarios');
+                return;
+              }
+          
+              if (mode === 'rent') {
+                await createRent(userId as string, bikeId as string);
+                alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
+              } else {
+                await createReservation(userId as string, bikeId as string);
+                alert(`Reserva realizada para la bicicleta ${bikeId}`);
+              }
+            } catch (err) {
+              alert('Error al procesar la acción');
+              console.error(err);
             }
           }}
         >
