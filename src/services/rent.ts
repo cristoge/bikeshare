@@ -2,7 +2,7 @@ import { generateTimestampz,calculateEndTime } from "../utils/generateTimestampz
 import { supabase } from "./supabase";
 import { changeBikeStatus } from "./bike";
 //la funcion para crear el alquiler funciona
-const createRent = async (userId: string, bikeId: string) => {
+export const createRent = async (userId: string, bikeId: string) => {
   try {
     const date = generateTimestampz();
     const { error } = await supabase.from("rent").insert({

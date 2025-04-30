@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { Platform } from "react-native";
 
 const OptionsLayout = () => {
   return (
@@ -7,6 +8,29 @@ const OptionsLayout = () => {
       name="profileCard"
       options={{ 
         title: 'My Profile', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen 
+      name="contact"
+      options={{ 
+        title: 'Contact', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen 
+      name="help"
+      options={{ 
+        title: 'Help', 
+        
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen
+      name="reservation"
+      options={{ 
+        title: 'ejemplo', 
+        headerShown: Platform.OS === 'ios' ? false : true,
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />

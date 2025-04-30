@@ -16,6 +16,13 @@ export default function ProfileScreen() {
       router.push("/(options)/profileCard");
     }
   };
+  const navigateToContact = () => {
+    router.push("/(options)/contact");
+  }
+
+  const navigateToHelp = () => {
+    router.push("/(options)/help");
+  }
   
   return (
     <SafeAreaView style={styles.container}>
@@ -50,15 +57,15 @@ export default function ProfileScreen() {
           <View style={styles.separator} />
           <TouchableOpacity style={styles.button}>
             <Icon name="clipboard" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Plans</Text>
+            <Text style={styles.buttonText}>Plans      </Text>
           </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigateToHelp()}>
             <Icon name="question-circle" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Help</Text>
           </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigateToContact()}>
             <Icon name="envelope" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Contact Us</Text>
           </TouchableOpacity>
@@ -108,10 +115,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: '#333',
-    marginLeft: 10, // Espacio entre el icono y el texto
+    marginLeft: 10, 
   },
   icon: {
-    marginRight: 10, // Espacio entre el icono y el texto
+    marginRight: 10, 
   },
   separator: {
     height: 1,
