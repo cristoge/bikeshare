@@ -1,6 +1,6 @@
 import { View, Text, Button } from "react-native";
 import { useRouter } from "expo-router";
-import ProfileScreen from "@/src/screens/ProfileScreen";
+import ProfileScreen from "@/src/screens/Info/ProfileScreen";
 
 const Account = () => {
   const router = useRouter();

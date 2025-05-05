@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import useUserStore from '../stores/userStore'; // Asegúrate de importar tu store
+import useUserStore from '../../stores/userStore'; // Asegúrate de importar tu store
 
 const ProfileCard = () => {
   const user = useUserStore((state) => state.user); // accede al user desde el store

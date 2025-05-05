@@ -14,7 +14,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { getBikes } from '@/src/services/bike';
 import { getLocation } from '@/src/services/location';
 import { useRouter } from 'expo-router';
-import useUserStore from '../stores/userStore'; // Asegúrate de importar tu store
+import useUserStore from '@/src/stores/userStore'; // Asegúrate de importar tu store
 const bikeIcons = {
   Normal: require('@/src/assets/images/bike.png'),
   Electric: require('@/src/assets/images/electric-bike.png'),
@@ -60,7 +60,7 @@ const MapScreen = () => {
         bikeId: bikeData.id,
         model: bikeData.model,
         locationName: selectedLocation?.location_name || '',
-        userId: user.id, 
+        userId: user.id,
       },
     });
   };
@@ -132,7 +132,7 @@ const MapScreen = () => {
         >
           <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
             <View style={styles.modalContainer}>
-              <TouchableWithoutFeedback onPress={() => {}}>
+              <TouchableWithoutFeedback onPress={() => { }}>
                 <View style={styles.modalContent}>
                   <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
                   {(() => {
@@ -174,6 +174,11 @@ const MapScreen = () => {
                   <Button
                     title="Continue"
                     onPress={() => {
+                      if (!user) {
+                        alert('Por favor, inicia sesión para reservar una bicicleta.');
+                        return;
+                      }
+
                       const selectedBike = bikes.find(
                         (bike) =>
                           bike.current_location_id === selectedLocation.id &&

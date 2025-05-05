@@ -1,4 +1,4 @@
-import ReservaScreen from "@/src/screens/ReservationScreen";
+import ReservaScreen from "@/src/screens/Rent/ReservationScreen";
 const reservation = () => {
   return (
     <ReservaScreen/>

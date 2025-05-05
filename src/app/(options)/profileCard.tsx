@@ -1,4 +1,4 @@
-import ProfileCard from "@/src/screens/profileCard";
+import ProfileCard from "@/src/screens/Profile/profileCard";
 const profileScreenCard = () => {
   return (
     <ProfileCard />

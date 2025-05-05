@@ -1,4 +1,4 @@
-import ContactScreen from "@/src/screens/ContactScreen";
+import ContactScreen from "@/src/screens/Info/ContactScreen";
 const contact = () => {
   return (
     <ContactScreen />

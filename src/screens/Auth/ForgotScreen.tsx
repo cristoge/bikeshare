@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  Alert,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
-import { forgotPassword } from '../services/user';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { forgotPassword } from '../../services/user';
 
-const ForgotScreen = () => {
+import Logo from '../../components/Auth/Logo';
+import AuthInput from '../../components/Auth/AuthInput';
+import AuthButton from '../../components/Auth/AuthButton';
+
+const ForgotScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +17,7 @@ const ForgotScreen = () => {
     }
 
     setLoading(true);
-    const result = await forgotPassword(email);
+    await forgotPassword(email);
     setLoading(false);
 
     Alert.alert(
@@ -33,27 +28,24 @@ const ForgotScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+      <Logo />
       <Text style={styles.title}>Forgot your password?</Text>
       <Text style={styles.subtitle}>
         Enter your email and we will send you instructions to recover it.
       </Text>
-      <TextInput
-        style={styles.input}
+
+      <AuthInput
         placeholder="Correo electrónico"
-        keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
-        placeholderTextColor="#aaa"
+        keyboardType="email-address"
       />
 
-      <TouchableOpacity
-        style={styles.button}
+      <AuthButton
         onPress={handleForgotPassword}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>{loading ? 'Cargando...' : 'Enviar'}</Text>
-      </TouchableOpacity>
+        loading={loading}
+        text="Enviar"
+      />
     </ScrollView>
   );
 };
@@ -65,12 +57,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     flexGrow: 1,
     alignItems: 'center',
-  },
-  logo: {
-    width: 160,
-    height: 160,
-    borderRadius: 8,
-    marginBottom: 20,
   },
   title: {
     fontSize: 22,
@@ -85,31 +71,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 25,
     paddingHorizontal: 10,
-  },
-  input: {
-    width: '100%',
-    height: 48,
-    borderColor: '#E0E0E0',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    marginBottom: 20,
-    backgroundColor: '#F9F9F9',
-    color: '#333',
-  },
-  button: {
-    width: '100%',
-    height: 48,
-    backgroundColor: '#10B88A',
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

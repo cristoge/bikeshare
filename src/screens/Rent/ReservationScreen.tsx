@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useLocalSearchParams } from 'expo-router';
-import { createRent,createReservation } from '../services/rent';
+import { createRent, createReservation } from '../../services/rent';
 const bikeIcons = {
   normal: require('@/src/assets/images/bike.png'),
   electric: require('@/src/assets/images/electric-bike.png'),
@@ -30,6 +30,25 @@ export default function ReservationScreen() {
     setShowPicker(Platform.OS === 'ios');
     setReservationTime(currentDate);
   };
+  const handleReservation = async () => {
+    if (!bikeId || !userId) {
+      alert('Faltan datos necesarios');
+      return;
+    }
+
+    try {
+      if (mode === 'rent') {
+        await createRent(userId as string, bikeId as string);
+        alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
+      } else {
+        await createReservation(userId as string, bikeId as string);
+        alert(`Reserva realizada para la bicicleta ${bikeId}`);
+      }
+    } catch (err) {
+      alert('Error al procesar la acción');
+      console.error(err);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -39,10 +58,10 @@ export default function ReservationScreen() {
 
         <View style={styles.card}>
           <Image source={bikeIcons[model as keyof typeof bikeIcons]} style={styles.bikeImage} />
-            <Text style={styles.infoText}>Bike ID: {bikeId?.slice(0, 5)}</Text>
-            <Text style={styles.infoText}>
+          <Text style={styles.infoText}>Bike ID: {bikeId?.slice(0, 5)}</Text>
+          <Text style={styles.infoText}>
             <Text style={{ fontWeight: 'bold' }}>User:</Text> {userId}
-            </Text>
+          </Text>
         </View>
 
         <View style={styles.separator} />
@@ -92,28 +111,7 @@ export default function ReservationScreen() {
           )}
         </View>
 
-        <TouchableOpacity
-          style={styles.reserveButton}
-          onPress={async () => {
-            try {
-              if (!bikeId || !userId) {
-                alert('Faltan datos necesarios');
-                return;
-              }
-          
-              if (mode === 'rent') {
-                await createRent(userId as string, bikeId as string);
-                alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
-              } else {
-                await createReservation(userId as string, bikeId as string);
-                alert(`Reserva realizada para la bicicleta ${bikeId}`);
-              }
-            } catch (err) {
-              alert('Error al procesar la acción');
-              console.error(err);
-            }
-          }}
-        >
+        <TouchableOpacity style={styles.reserveButton} onPress={handleReservation}>
           <Text style={styles.reserveText}>{mode === 'rent' ? 'Rent now' : 'Reserve'}</Text>
         </TouchableOpacity>
       </ScrollView>

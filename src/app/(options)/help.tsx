@@ -1,4 +1,4 @@
-import HelpScreen from "@/src/screens/HelpScreen";
+import HelpScreen from "@/src/screens/Info/HelpScreen";
 const help = () => {
   return (
     <HelpScreen />

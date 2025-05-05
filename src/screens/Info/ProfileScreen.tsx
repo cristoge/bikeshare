@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { UserStats } from '../components/totalStats';
+import { UserStats } from '../../components/totalStats';
 import Icon from 'react-native-vector-icons/FontAwesome'; 
 import { useRouter } from 'expo-router';
-import useUserStore from '../stores/userStore';
-import { logout } from '../services/user';
+import useUserStore from '../../stores/userStore';
+import { logout } from '../../services/user';
 export default function ProfileScreen() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
