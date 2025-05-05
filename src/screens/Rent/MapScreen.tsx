@@ -94,7 +94,10 @@ const MapScreen = () => {
   };
 
   const handleSelectBikeType = (type: 'normal' | 'electric' | 'tandem') => {
-    setSelectedBikeType(type);
+    const bikeCounts = countBikesByTypeAtLocation(selectedLocation?.id || '');
+    if (bikeCounts[type] > 0) {
+      setSelectedBikeType(type);
+    }
   };
 
   if (loading) {
@@ -117,6 +120,7 @@ const MapScreen = () => {
             }}
             onPress={() => {
               setSelectedLocation(location);
+              setSelectedBikeType(null);
               setModalVisible(true);
             }}
           />
@@ -134,6 +138,12 @@ const MapScreen = () => {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => { }}>
                 <View style={styles.modalContent}>
+                  <TouchableOpacity 
+                    style={styles.closeButton} 
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Text style={styles.closeButtonText}>X</Text>
+                  </TouchableOpacity>
                   <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
                   {(() => {
                     const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
@@ -142,35 +152,49 @@ const MapScreen = () => {
                         {(['normal', 'electric', 'tandem'] as const).map((type) => {
                           const label = type.charAt(0).toUpperCase() + type.slice(1);
                           const isSelected = selectedBikeType === type;
+                          const isAvailable = bikeCounts[type] > 0;
                           return (
                             <TouchableOpacity
                               key={type}
-                              style={styles.bikeOptionRow}
+                              style={[
+                                styles.bikeOptionRow,
+                                !isAvailable && styles.disabledOption
+                              ]}
                               onPress={() => handleSelectBikeType(type)}
+                              disabled={!isAvailable}
                             >
                               <View style={styles.bikeInfo}>
                                 <Image
                                   source={bikeIcons[label as keyof typeof bikeIcons]}
-                                  style={styles.bikeIcon}
+                                  style={[
+                                    styles.bikeIcon,
+                                    !isAvailable && styles.disabledIcon
+                                  ]}
                                 />
-                                <Text style={styles.bikeLabel}>
+                                <Text style={[
+                                  styles.bikeLabel,
+                                  !isAvailable && styles.disabledText
+                                ]}>
                                   {label}: {bikeCounts[type]}
                                 </Text>
                               </View>
-                              <View
-                                style={[
-                                  styles.radioButton,
-                                  isSelected ? styles.selectedRadioButton : styles.unselectedRadioButton,
-                                ]}
-                              >
-                                {isSelected && <View style={styles.innerCircle} />}
-                              </View>
+                              {isAvailable && (
+                                <View
+                                  style={[
+                                    styles.radioButton,
+                                    isSelected ? styles.selectedRadioButton : styles.unselectedRadioButton,
+                                  ]}
+                                >
+                                  {isSelected && <View style={styles.innerCircle} />}
+                                </View>
+                              )}
                             </TouchableOpacity>
                           );
                         })}
                       </View>
                     );
                   })()}
+<<<<<<< HEAD:src/screens/Rent/MapScreen.tsx
                   <Button
                     title="Continue"
                     onPress={() => {
@@ -193,6 +217,12 @@ const MapScreen = () => {
                         alert('No hay bicicletas disponibles de ese tipo.');
                       }
                     }}
+=======
+                  <Button 
+                    title="Continue" 
+                    onPress={() => {}} 
+                    disabled={!selectedBikeType} 
+>>>>>>> origin/Tony/mejorarmapa:src/screens/MapScreen.tsx
                   />
                 </View>
               </TouchableWithoutFeedback>
@@ -280,7 +310,32 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#0FB88A',
   },
+  disabledOption: {
+    opacity: 0.5,
+  },
+  disabledIcon: {
+    opacity: 0.5,
+  },
+  disabledText: {
+    color: '#999',
+  },
+  closeButton: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
 });
 
 export default MapScreen;
-
