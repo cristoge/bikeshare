@@ -194,7 +194,6 @@ const MapScreen = () => {
                       </View>
                     );
                   })()}
-<<<<<<< HEAD:src/screens/Rent/MapScreen.tsx
                   <Button
                     title="Continue"
                     onPress={() => {
@@ -217,12 +216,6 @@ const MapScreen = () => {
                         alert('No hay bicicletas disponibles de ese tipo.');
                       }
                     }}
-=======
-                  <Button 
-                    title="Continue" 
-                    onPress={() => {}} 
-                    disabled={!selectedBikeType} 
->>>>>>> origin/Tony/mejorarmapa:src/screens/MapScreen.tsx
                   />
                 </View>
               </TouchableWithoutFeedback>
