@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Icon from 'react-native-vector-icons/Ionicons';  
 import {
   View,
   StyleSheet,
@@ -138,12 +139,12 @@ const MapScreen = () => {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => { }}>
                 <View style={styles.modalContent}>
-                  <TouchableOpacity 
-                    style={styles.closeButton} 
-                    onPress={() => setModalVisible(false)}
-                  >
-                    <Text style={styles.closeButtonText}>X</Text>
-                  </TouchableOpacity>
+                <TouchableOpacity 
+  style={styles.closeButton} 
+  onPress={() => setModalVisible(false)}
+>
+  <Icon name="close" size={24} color="#333" />
+</TouchableOpacity>
                   <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
                   {(() => {
                     const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
