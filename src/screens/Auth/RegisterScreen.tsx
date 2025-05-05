@@ -18,37 +18,61 @@ import AuthButton from '../../components/Auth/AuthButton';
 import AuthLink from '../../components/Auth/AuthLink';
 import WhyDniModal from '../../components/Auth/WhyDni';
 
+import { RegisterSchemaType,registerSchema } from '@/src/utils/validations';
+import { z } from 'zod';
+
 const RegisterScreen: React.FC = () => {
   const router = useRouter();
 
-  const [name, setName] = useState('');
-  const [dni, setDni] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [form, setForm] = useState<RegisterSchemaType>({
+    name: '',
+    dni: '',
+    email: '',
+    password: '',
+  });
+
+  const [errors, setErrors] = useState<Partial<Record<keyof RegisterSchemaType, string>>>({});
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const handleChange = (field: keyof RegisterSchemaType, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setErrors((prev) => ({ ...prev, [field]: '' })); // Clear error on change
+  };
+
   const handleRegister = async () => {
-    if (!name || !dni || !email || !password) {
-      alert('Please fill in all the fields.');
+    const validation = registerSchema.safeParse(form);
+
+    if (!validation.success) {
+      const fieldErrors: Partial<Record<keyof RegisterSchemaType, string>> = {};
+      validation.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof RegisterSchemaType;
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
       return;
     }
 
     setLoading(true);
-    const result = await registerAndLogin(email, password, name, dni);
+    const result = await registerAndLogin(
+      form.email,
+      form.password,
+      form.name,
+      form.dni
+    );
     setLoading(false);
 
     if (result) {
       router.replace('/(tabs)');
     } else {
-      alert('Could not create the account. Please try again.');
+      setErrors({ email: 'Something went wrong. Please try again.' });
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
@@ -59,17 +83,44 @@ const RegisterScreen: React.FC = () => {
               Fill in the details to register and start using the app.
             </Text>
 
-            <AuthInput placeholder="Full Name" value={name} onChangeText={setName} />
-            <AuthInput placeholder="DNI" value={dni} onChangeText={setDni} keyboardType="numeric" />
-            <AuthInput placeholder="Email Address" value={email} onChangeText={setEmail} keyboardType="email-address" />
-            <AuthInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
+            <AuthInput
+              placeholder="Full Name"
+              value={form.name}
+              onChangeText={(val) => handleChange('name', val)}
+              error={errors.name}
+            />
+            <AuthInput
+              placeholder="DNI"
+              value={form.dni}
+              onChangeText={(val) => handleChange('dni', val)}
+              keyboardType="numeric"
+              error={errors.dni}
+            />
+            <AuthInput
+              placeholder="Email Address"
+              value={form.email}
+              onChangeText={(val) => handleChange('email', val)}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              error={errors.email}
+            />
+            <AuthInput
+              placeholder="Password"
+              value={form.password}
+              onChangeText={(val) => handleChange('password', val)}
+              secureTextEntry
+              error={errors.password}
+            />
 
             <View style={styles.whyContainer}>
               <AuthLink text="Why we need your DNI" onPress={() => setModalVisible(true)} />
             </View>
 
             <AuthButton onPress={handleRegister} loading={loading} text="Register" />
-            <AuthLink text="Already have an account? Log in" onPress={() => router.push('/(auth)/login')} />
+            <AuthLink
+              text="Already have an account? Log in"
+              onPress={() => router.push('/(auth)/login')}
+            />
           </View>
 
           <WhyDniModal visible={modalVisible} onClose={() => setModalVisible(false)} />
