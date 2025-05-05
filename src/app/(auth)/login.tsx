@@ -1,13 +1,3 @@
-import React from 'react';
-import { Text, View, Button } from 'react-native';
-
-const LoginScreen = () => {
-  return (
-    <View>
-      <Text>Login</Text>
-      <Button title="Log in" onPress={() => {}} />
-    </View>
-  );
-};
+import LoginScreen from '@/src/screens/Auth/LoginScreen';
 
 export default LoginScreen;

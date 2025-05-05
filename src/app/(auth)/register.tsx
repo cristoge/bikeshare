@@ -1,13 +1,10 @@
 import React from 'react';
 import { Text, View, Button } from 'react-native';
-
-const RegisterScreen = () => {
+import RegisterScreen from '@/src/screens/Auth/RegisterScreen';
+const Register = () => {
   return (
-    <View>
-      <Text>Register</Text>
-      <Button title="Registrar" onPress={() => {}} />
-    </View>
+    <RegisterScreen/>
   );
 };
 
-export default RegisterScreen;
+export default Register;

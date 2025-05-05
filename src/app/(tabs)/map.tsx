@@ -1,12 +1,12 @@
 import React from 'react';
 import { AppRegistry, Text, View } from 'react-native';
-import WelcomeScreen from '@/src/components/Welcome';
-const App = () => {
+import MapScreen from '@/src/screens/Rent/MapScreen';
+const map = () => {
   return (
         <View>
-          <WelcomeScreen />
+          <MapScreen/>
         </View>
       );
 };
 
-export default App;
+export default map;
