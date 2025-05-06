@@ -4,7 +4,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
-
+import { userRents } from '../services/user';
+import { Button } from 'react-native';
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
 const consejos = [
@@ -85,7 +86,9 @@ export default function WelcomeScreen() {
     if (hour < 18) return "Buenas tardes";
     return "Buenas noches";
   };
-
+  const ejemplo = ()=>{
+    userRents(user.id)
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -117,6 +120,11 @@ export default function WelcomeScreen() {
         <Text style={styles.statusItem}>
           📋 Reserva activa: {bikeStats.reservation ? "Sí" : "No tienes reservas"}
         </Text>
+        <Button
+          title="Llamar a ejemplo"
+          onPress={ejemplo}
+          color="#007BFF"
+        />
       </View>
 
       {/* 🌱 Consejo ecológico */}

@@ -31,13 +31,13 @@ export default function ProfileScreen() {
           <Text style={styles.name}>Hi, {userName}</Text>
         </View>
         <View>
-          <UserStats userData={{ totalTrips: 120, co2Saved: 45 }} />
+          <UserStats userData={{ totalTrips: 0, co2Saved: 0 }} />
         </View>
         {/* Lista de botones */}
         <View style={styles.buttonList}>
             <TouchableOpacity style={styles.button} onPress={() => handleNavigate()}>
             <Icon name="user" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Profile</Text>
+            <Text style={styles.buttonText}>{user ? "Profile" : "Log In"}</Text>
             </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity style={styles.button}>

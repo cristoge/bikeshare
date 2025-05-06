@@ -120,3 +120,18 @@ export const registerAndLogin = async (email: string, password: string, name: st
   }
   return user
 }
+
+
+export const userRents = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('rent') 
+    .select('*')
+    .eq('user_id', userId); 
+
+  if (error) {
+    console.error('Error fetching user rents:', error);
+    return null;
+  }
+  console.log('User rents:', data);
+  return data;
+};
