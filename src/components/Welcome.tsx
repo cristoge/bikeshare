@@ -5,36 +5,38 @@ import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
 import { userRents } from '../services/user';
-import { Button } from 'react-native';
+
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
-const consejos = [
-  "Usar la bici en vez del coche ayuda a reducir el CO₂.",
-  "Moverte en bici mejora tu salud física y mental.",
-  "Una bici ocupa 10 veces menos espacio que un coche.",
-  "Una bici no contamina y es silenciosa 🚲",
-  "Cada kilómetro en bici te ahorra dinero y emisiones.",
+const tips = [
+  "Using a bike instead of a car helps reduce CO₂ emissions.",
+  "Cycling improves your physical and mental health.",
+  "A bike takes up 10 times less space than a car.",
+  "A bike is quiet and doesn't pollute 🚲",
+  "Each kilometer on a bike saves you money and emissions.",
 ];
 
 export default function WelcomeScreen() {
   const user = useUserStore((state) => state.user);
-  const userName = user?.name || "Usuario";
+  const userName = user?.name || "User";
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [weatherData, setWeatherData] = useState({
-    location: "Desconocido",
+    location: "Unknown",
     temperature: 0,
-    condition: "Cargando...",
+    condition: "Loading...",
   });
 
   const [ecoTip, setEcoTip] = useState("");
   const [bikeStats, setBikeStats] = useState({
-    available: 3, // hardcodeado por ahora
-    reservation: null, // o un objeto con datos reales
+    available: 3, // hardcoded for now
+    reservation: null,
   });
 
+  const [userRentData, setUserRentData] = useState<any[] | null>(null);
+
   useEffect(() => {
-    setEcoTip(consejos[Math.floor(Math.random() * consejos.length)]);
+    setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
 
     const timer = setInterval(() => {
       setCurrentDate(new Date());
@@ -47,7 +49,7 @@ export default function WelcomeScreen() {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setWeatherData(prev => ({ ...prev, location: "Permiso denegado" }));
+        setWeatherData(prev => ({ ...prev, location: "Permission denied" }));
         return;
       }
       let location = await Location.getCurrentPositionAsync({});
@@ -55,10 +57,23 @@ export default function WelcomeScreen() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!user || !user.id) return;
+    const fetchUserRents = async () => {
+      try {
+        const data = await userRents(user.id);
+        setUserRentData(data);
+      } catch (error) {
+        console.error("Error fetching user rents:", error);
+      }
+    };
+    fetchUserRents();
+  }, []);
+
   const fetchWeather = async (lat: number, lon: number) => {
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=es&appid=${API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=en&appid=${API_KEY}`
       );
       const data = await response.json();
       setWeatherData({
@@ -72,7 +87,7 @@ export default function WelcomeScreen() {
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-ES', {
+    return date.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -82,13 +97,11 @@ export default function WelcomeScreen() {
 
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Buenos días";
-    if (hour < 18) return "Buenas tardes";
-    return "Buenas noches";
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
   };
-  const ejemplo = ()=>{
-    userRents(user.id)
-  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -113,21 +126,16 @@ export default function WelcomeScreen() {
         </View>
       </View>
 
-      {/* 🟢 Estado del sistema */}
-      <View style={styles.statusCard}>
-        <Text style={styles.statusTitle}>Estado actual</Text>
-        <Text style={styles.statusItem}>🚲 Bicis disponibles cerca: {bikeStats.available}</Text>
-        <Text style={styles.statusItem}>
-          📋 Reserva activa: {bikeStats.reservation ? "Sí" : "No tienes reservas"}
-        </Text>
-        <Button
-          title="Llamar a ejemplo"
-          onPress={ejemplo}
-          color="#007BFF"
-        />
-      </View>
+      {/* 🚴 Active Rental */}
+      {userRentData && userRentData.length > 0 && (
+        <View style={styles.rentCard}>
+          <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
+          <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
+          <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
+        </View>
+      )}
 
-      {/* 🌱 Consejo ecológico */}
+      {/* 🌱 Eco Tip */}
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>💡 {ecoTip}</Text>
       </View>
@@ -137,7 +145,6 @@ export default function WelcomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-
     backgroundColor: '#F1F3F5',
     padding: 24,
     justifyContent: 'space-between',
@@ -227,5 +234,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#495057',
     marginBottom: 4,
+  },
+  rentCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 18,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });

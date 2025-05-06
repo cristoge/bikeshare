@@ -31,7 +31,7 @@ export default function ProfileScreen() {
           <Text style={styles.name}>Hi, {userName}</Text>
         </View>
         <View>
-          <UserStats userData={{ totalTrips: 0, co2Saved: 0 }} />
+          <UserStats/>
         </View>
         {/* Lista de botones */}
         <View style={styles.buttonList}>

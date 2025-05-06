@@ -85,3 +85,17 @@ export const handleRentStatus = async (id: string, status: string) => {
     console.error("Error handling rent status:", error);
   }
 };
+
+export const getTotalRentsByUser = async (userId: string): Promise<number> => {
+  try {
+    const { data, error } = await supabase
+      .from("rent")
+      .select("id", { count: "exact" })
+      .eq("user_id", userId);
+    if (error) throw error;
+    return data?.length || 0;
+  } catch (error) {
+    console.error("Error fetching total rents by user:", error);
+    throw error;
+  }
+};

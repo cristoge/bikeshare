@@ -1,22 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { getTotalRentsByUser } from '../services/rent';
+import useUserStore from '../stores/userStore';
 
-interface UserStatsProps {
-  userData: {
-    totalTrips: number;
-    co2Saved: number;
-  };
-}
+export const UserStats = () => {
+  const [totalRents, setTotalRents] = useState<number>(0);
+  const user = useUserStore((state) => state.user);
 
-export const UserStats = ({ userData }: UserStatsProps) => {
+  useEffect(() => {
+    if (!user) return;
+    const fetchTotalRents = async () => {
+      try {
+        const total = await getTotalRentsByUser(user.id);
+        setTotalRents(total);
+      } catch (error) {
+        console.error('Error fetching total rents:', error);
+      }
+    };
+    fetchTotalRents();
+  }, [user]);
+
+  const estimatedCO2Saved = (totalRents * 0.63).toFixed(2);
+
   return (
     <View style={styles.statsContainer}>
       <View style={styles.statItem}>
         <View style={styles.statIcon}>
           <Ionicons name="car-outline" size={24} color="#2ecc71" />
         </View>
-        <Text style={styles.statValue}>{userData.totalTrips}</Text>
+        <Text style={styles.statValue}>{totalRents}</Text>
         <Text style={styles.statLabel}>Viajes Totales</Text>
       </View>
 
@@ -26,7 +39,7 @@ export const UserStats = ({ userData }: UserStatsProps) => {
         <View style={styles.statIcon}>
           <MaterialCommunityIcons name="leaf" size={24} color="#27ae60" />
         </View>
-        <Text style={styles.statValue}>{userData.co2Saved}kg</Text>
+        <Text style={styles.statValue}>{estimatedCO2Saved}kg</Text>
         <Text style={styles.statLabel}>CO₂ Ahorrado</Text>
       </View>
     </View>
@@ -69,6 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 4,
+    textAlign: 'center',
   },
   divider: {
     width: 1,
