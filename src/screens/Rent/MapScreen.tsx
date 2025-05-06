@@ -61,6 +61,7 @@ const MapScreen = () => {
         bikeId: bikeData.id,
         model: bikeData.model,
         locationName: selectedLocation?.location_name || '',
+        locationId:selectedLocation?.id || '1231312-11c5-4b9d-9d31-5a16f15ba295',
         userId: user.id,
       },
     });

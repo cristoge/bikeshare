@@ -20,7 +20,7 @@ const bikeIcons = {
 };
 
 export default function ReservationScreen() {
-  const { bikeId, model, locationName, userId } = useLocalSearchParams();
+  const { bikeId, model, locationName, userId,locationId } = useLocalSearchParams();
   const [mode, setMode] = useState<'rent' | 'reserve'>('rent');
   const [reservationTime, setReservationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -38,7 +38,7 @@ export default function ReservationScreen() {
 
     try {
       if (mode === 'rent') {
-        await createRent(userId as string, bikeId as string);
+        await createRent(userId as string, bikeId as string,locationId as string);
         alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
       } else {
         await createReservation(userId as string, bikeId as string);
