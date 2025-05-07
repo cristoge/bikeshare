@@ -124,14 +124,16 @@ export const registerAndLogin = async (email: string, password: string, name: st
 
 export const userRents = async (userId: string) => {
   const { data, error } = await supabase
-    .from('rent') 
+    .from('rent')
     .select('*')
-    .eq('user_id', userId); 
+    .eq('user_id', userId)
+    .neq('status', 'completed'); // Solo rentas que NO estén completadas
 
   if (error) {
     console.error('Error fetching user rents:', error);
     return null;
   }
+
   console.log('User rents:', data);
   return data;
 };

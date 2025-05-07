@@ -1,6 +1,6 @@
 import { generateTimestampz,calculateEndTime } from "../utils/generateTimestampz";
 import { supabase } from "./supabase";
-import { changeBikeStatus } from "./bike";
+import { changeBikeStatus, changeLocation } from "./bike";
 //la funcion para crear el alquiler funciona
 export const createRent = async (userId: string, bikeId: string, startLocation_id: string) => {
   try {
@@ -96,6 +96,39 @@ export const getTotalRentsByUser = async (userId: string): Promise<number> => {
     return data?.length || 0;
   } catch (error) {
     console.error("Error fetching total rents by user:", error);
+    throw error;
+  }
+};
+
+export const endRent = async (rentId: string, bikeId: string, endLocation_id='3545f44b-72c3-4c94-8865-9a34fa5caebc') => {
+  try {
+    const date = generateTimestampz();
+
+    // Actualizar la tabla rent con end_date y estado "completed"
+    const { error: rentError } = await supabase
+      .from("rent")
+      .update({
+        end_date: date,
+        status: "completed",
+      })
+      .eq("id", rentId);
+
+    if (rentError) throw new Error(`Error updating rent: ${rentError.message}`);
+
+    // Cambiar estado de la bici a "available"
+    await changeBikeStatus(bikeId, "available");
+    await changeLocation(bikeId)
+    // Actualizar la tabla route con end_location_id
+    const { error: routeError } = await supabase
+      .from("route")
+      .update({ final_location_id: endLocation_id })
+      .eq("rent_id", rentId);
+
+    if (routeError) throw new Error(`Error updating route: ${routeError.message}`);
+
+    return { message: "Rent and route successfully ended." };
+  } catch (error) {
+    console.error("Error ending rent and route:", error);
     throw error;
   }
 };

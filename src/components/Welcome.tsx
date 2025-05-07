@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
 import { userRents } from '../services/user';
+import { endRent } from '../services/rent';
 
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
@@ -28,11 +29,6 @@ export default function WelcomeScreen() {
   });
 
   const [ecoTip, setEcoTip] = useState("");
-  const [bikeStats, setBikeStats] = useState({
-    available: 3, // hardcoded for now
-    reservation: null,
-  });
-
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
 
   useEffect(() => {
@@ -68,7 +64,7 @@ export default function WelcomeScreen() {
       }
     };
     fetchUserRents();
-  }, []);
+  }, [user]);
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
@@ -102,6 +98,28 @@ export default function WelcomeScreen() {
     return "Good evening";
   };
 
+  const handleEndRent = async () => {
+    try {
+      const location = await Location.getCurrentPositionAsync({});
+      const rent = userRentData?.[0];
+
+      if (!rent) {
+        Alert.alert("No active rent found");
+        return;
+      }
+
+      await endRent(rent.id, rent.bike_id);
+
+      Alert.alert("Rent ended successfully");
+
+      const updatedRents = await userRents(user.id);
+      setUserRentData(updatedRents);
+    } catch (error) {
+      console.error("Error ending rent:", error);
+      Alert.alert("Failed to end rent");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
@@ -126,16 +144,18 @@ export default function WelcomeScreen() {
         </View>
       </View>
 
-      {/* 🚴 Active Rental */}
       {userRentData && userRentData.length > 0 && (
         <View style={styles.rentCard}>
           <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
           <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
           <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
+
+          <TouchableOpacity style={styles.endButton} onPress={handleEndRent}>
+            <Text style={styles.endButtonText}>End Ride</Text>
+          </TouchableOpacity>
         </View>
       )}
 
-      {/* 🌱 Eco Tip */}
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>💡 {ecoTip}</Text>
       </View>
@@ -245,5 +265,17 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
     shadowRadius: 4,
     elevation: 2,
+  },
+  endButton: {
+    marginTop: 12,
+    backgroundColor: '#DC3545',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  endButtonText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });
