@@ -5,13 +5,18 @@ const imageData = [
   {
     id: '1',
     imageUrl: require('../../assets/images/real-bike.png'),
-    description: 'This is our simple bike, perfect for short and flat trips.',
+    description: 'Discover our simple bike, designed for short and smooth rides. Perfect for city commutes and leisurely trips!',
   },
   {
     id: '2',
     imageUrl: require('../../assets/images/electric_bike.png'),
-    description: 'A classic road bike, perfect for commuting.',
+    description: 'Experience the power of our electric bike, built for long journeys and uphill adventures. Effortlessly conquer any terrain!',
   },
+  {
+    id: '3',
+    imageUrl: require('../../assets/images/tandem_bike.png'),
+    description: 'The perfect tandem bike for couples or friends! Ride together and enjoy the journey, side by side!',
+  }
 ];
 
 const ImageList = () => {
@@ -45,9 +50,9 @@ const ImageList = () => {
         data={imageData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        horizontal={true} // Esto es para que la FlatList sea horizontal
-        showsHorizontalScrollIndicator={false} // Oculta la barra de desplazamiento horizontal
-        contentContainerStyle={styles.flatListContent} // Añadido espacio entre los elementos
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContent}
       />
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalBackground}>
@@ -69,10 +74,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   flatListContent: {
-    paddingHorizontal: 10,  // Añadir margen horizontal para separar las columnas
+    paddingHorizontal: 10,
   },
   cardContainer: {
-    margin: 10,  // Esto asegura que cada tarjeta tenga un espacio entre ellas
+    margin: 10,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -80,19 +85,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 10,
-    width: 250,  // Fijo para que todas las cards tengan el mismo tamaño
-    height: 150,  // Fijo para que todas las cards tengan el mismo tamaño
-    elevation: 4,  // Sombra para darle el efecto de tarjeta
+    width: 250,
+    height: 150,
+    elevation: 4,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
-    justifyContent: 'center', // Centra la imagen dentro de la tarjeta
+    justifyContent: 'center',
     alignItems: 'center',
   },
   image: {
-    width: 150,  // Tamaño fijo para todas las imágenes dentro de las tarjetas
-    height: 130, // Tamaño fijo para todas las imágenes dentro de las tarjetas
+    width: 150,
+    height: 130,
     borderRadius: 8,
   },
   modalBackground: {
