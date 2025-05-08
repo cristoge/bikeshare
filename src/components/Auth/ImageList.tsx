@@ -1,28 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, Modal } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Modal,
+  Dimensions,
+} from 'react-native';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const imageData = [
   {
     id: '1',
     imageUrl: require('../../assets/images/real-bike.png'),
-    description: 'Discover our simple bike, designed for short and smooth rides. Perfect for city commutes and leisurely trips!',
+    description:
+      'Discover our simple bike, designed for short and smooth rides. Perfect for city commutes and leisurely trips!',
   },
   {
     id: '2',
     imageUrl: require('../../assets/images/electric_bike.png'),
-    description: 'Experience the power of our electric bike, built for long journeys and uphill adventures. Effortlessly conquer any terrain!',
+    description:
+      'Experience the power of our electric bike, built for long journeys and uphill adventures. Effortlessly conquer any terrain!',
   },
   {
     id: '3',
     imageUrl: require('../../assets/images/tandem_bike.png'),
-    description: 'The perfect tandem bike for couples or friends! Ride together and enjoy the journey, side by side!',
-  }
+    description:
+      'The perfect tandem bike for couples or friends! Ride together and enjoy the journey, side by side!',
+  },
 ];
 
 const ImageList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [selectedDescription, setSelectedDescription] = useState("");
+  const [selectedDescription, setSelectedDescription] = useState('');
 
   const openModal = (image: any, description: string) => {
     setSelectedImage(image);
@@ -33,11 +47,13 @@ const ImageList = () => {
   const closeModal = () => {
     setModalVisible(false);
     setSelectedImage(null);
-    setSelectedDescription("");
+    setSelectedDescription('');
   };
 
   const renderItem = ({ item }: { item: any }) => (
-    <TouchableOpacity onPress={() => openModal(item.imageUrl, item.description)} style={styles.cardContainer}>
+    <TouchableOpacity
+      onPress={() => openModal(item.imageUrl, item.description)}
+      style={styles.cardContainer}>
       <View style={styles.card}>
         <Image source={item.imageUrl} style={styles.image} />
       </View>
@@ -50,14 +66,18 @@ const ImageList = () => {
         data={imageData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        horizontal={true}
+        horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
+        snapToInterval={340} // ancho + margen
+        decelerationRate="fast"
       />
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalBackground}>
           <View style={styles.modalContent}>
-            {selectedImage && <Image source={selectedImage} style={styles.modalImage} />}
+            {selectedImage && (
+              <Image source={selectedImage} style={styles.modalImage} />
+            )}
             <Text style={styles.modalDescription}>{selectedDescription}</Text>
             <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
               <Text style={styles.closeButtonText}>Close</Text>
@@ -69,20 +89,23 @@ const ImageList = () => {
   );
 };
 
+const CARD_WIDTH = 320;
+const CARD_MARGIN = 10;
+
 const styles = StyleSheet.create({
   container: {
     paddingVertical: 10,
   },
   flatListContent: {
-    paddingHorizontal: 10,
+    paddingHorizontal: CARD_MARGIN,
   },
   cardContainer: {
-    marginHorizontal: 10,
+    marginRight: CARD_MARGIN,
   },
   card: {
     backgroundColor: '#fff',
     borderRadius: 16,
-    width: 320,
+    width: CARD_WIDTH,
     height: 180,
     elevation: 4,
     shadowColor: '#000',

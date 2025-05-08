@@ -7,7 +7,7 @@ import useUserStore from '../stores/userStore';
 import { userRents } from '../services/user';
 import { endRent } from '../services/rent';
 import ImageList  from './Auth/ImageList';
-
+import { ScrollView } from 'react-native';
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
 const tips = [
@@ -123,6 +123,7 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
       <View>
         <Text style={styles.helloText}>{getGreeting()},</Text>
         <Text style={styles.nameText}>{userName} 👋</Text>
@@ -160,10 +161,11 @@ export default function WelcomeScreen() {
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>💡 {ecoTip}</Text>
       </View>
-        <Text style={styles.flatlistText}>Our Bikes</Text>
+        <Text style={styles.flatlistText}>Explore Our Bike Collection</Text>
         <ImageList />
       <View>
       </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
