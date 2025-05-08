@@ -16,6 +16,11 @@ export default function ProfileScreen() {
       router.push("/(options)/profileCard");
     }
   };
+
+  const navigateToFreeRides = () => {
+    router.push("/(options)/FreeRides");
+  }
+
   const navigateToContact = () => {
     router.push("/(options)/contact");
   }
@@ -40,7 +45,7 @@ export default function ProfileScreen() {
             <Text style={styles.buttonText}>{user ? "Profile" : "Log In"}</Text>
             </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigateToFreeRides()}>
             <Icon name="history" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Ride History</Text>
           </TouchableOpacity>
