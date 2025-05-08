@@ -71,34 +71,30 @@ const ImageList = () => {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    paddingVertical: 10,
   },
   flatListContent: {
     paddingHorizontal: 10,
   },
   cardContainer: {
-    margin: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginHorizontal: 10,
   },
   card: {
     backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 10,
-    width: 250,
-    height: 150,
+    borderRadius: 16,
+    width: 320,
+    height: 180,
     elevation: 4,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden',
   },
   image: {
-    width: 150,
-    height: 130,
-    borderRadius: 8,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   modalBackground: {
     flex: 1,
@@ -107,10 +103,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '80%',
+    width: '85%',
     backgroundColor: '#fff',
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
   },
   modalImage: {
@@ -118,21 +114,23 @@ const styles = StyleSheet.create({
     height: 250,
     marginBottom: 20,
     borderRadius: 10,
+    resizeMode: 'cover',
   },
   modalDescription: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
   closeButton: {
     backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
   closeButtonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
 

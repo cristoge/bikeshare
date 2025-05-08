@@ -160,7 +160,7 @@ export default function WelcomeScreen() {
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>💡 {ecoTip}</Text>
       </View>
-        <Text style={styles.flatlistText}>🚴‍♂️ Bike Rentals</Text>
+        <Text style={styles.flatlistText}>Our Bikes</Text>
         <ImageList />
       <View>
       </View>
