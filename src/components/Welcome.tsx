@@ -6,6 +6,7 @@ import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
 import { userRents } from '../services/user';
 import { endRent } from '../services/rent';
+import ImageList  from './Auth/ImageList';
 
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
@@ -159,6 +160,10 @@ export default function WelcomeScreen() {
       <View style={styles.quoteContainer}>
         <Text style={styles.quoteText}>💡 {ecoTip}</Text>
       </View>
+        <Text style={styles.flatlistText}>🚴‍♂️ Bike Rentals</Text>
+        <ImageList />
+      <View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -173,6 +178,12 @@ const styles = StyleSheet.create({
     fontSize: 26,
     color: '#343A40',
     fontWeight: '300',
+  },
+  flatlistText: {
+    fontSize: 26,
+    color: '#343A40',
+    fontWeight: 'bold',
+    marginTop: 20
   },
   nameText: {
     fontSize: 34,
@@ -277,5 +288,16 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
     fontSize: 16,
+  },
+  flatlist: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.07,
+    shadowRadius: 4,
+    elevation: 2,
   },
 });
