@@ -1,135 +1,163 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  LayoutAnimation,
+  Platform,
+  UIManager,
+  ScrollView,
+  Alert,
+} from 'react-native';
+
+if (Platform.OS === 'android') {
+  UIManager.setLayoutAnimationEnabledExperimental?.(true);
+}
 
 type Plan = {
   id: string;
   title: string;
-  description: string;
+  baseColor: string;
   price: string;
-  highlight: string;
+  benefits: string[];
 };
 
 const plans: Plan[] = [
   {
-    id: 'monthly',
-    title: 'Daily Rider',
-    description:
-      'For those who need a bike regularly, enjoy 2 hours of free time every day.\nPerfect if you ride frequently.',
-    price: 'from €10 /month',
-    highlight: '2 hours free time per day',
+    id: 'basic',
+    title: 'Basic',
+    baseColor: '#A259FF',
+    price: '€19.99 / month',
+    benefits: [
+      '✓ Access to standard bikes',
+      '✓ Up to 1 hour daily ride time',
+      '✓ Basic customer support',
+    ],
   },
   {
-    id: 'annual',
-    title: 'Annual Explorer',
-    description:
-      'Great for committed riders. Get 2 hours of free rides every day, all year long — at a better price.',
-    price: 'from €90 /year',
-    highlight: '2 hours daily & cheaper than monthly',
+    id: 'plus',
+    title: 'Plus',
+    baseColor: '#0099FF',
+    price: '€29.99 / month',
+    benefits: [
+      '✓ Everything in Basic',
+      '✓ Up to 2 hours daily ride time',
+      '✓ Priority support',
+      '✓ Access to electric bikes',
+    ],
+  },
+  {
+    id: 'premium',
+    title: 'Premium',
+    baseColor: '#FFA500',
+    price: '€39.99 / month',
+    benefits: [
+      '✓ Everything in Plus',
+      '✓ Unlimited ride time',
+      '✓ Personal accident insurance',
+      '✓ VIP member rewards',
+    ],
   },
 ];
 
+const HelpGreen = '#10B88A';
+
 const MembershipsScreen: React.FC = () => {
+  const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
+
+  const toggleExpand = (id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedPlan((prev) => (prev === id ? null : id));
+  };
+
+  const handleJoin = (planTitle: string) => {
+    Alert.alert('Coming Soon', `Joining ${planTitle} is in progress...`);
+  };
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Memberships</Text>
-      <Text style={styles.subtitle}>Choose a plan to suit how you ride</Text>
+      <Text style={styles.title}>Membership Plans</Text>
 
-      <View style={styles.cardsContainer}>
-        {plans.map((plan) => (
-          <View key={plan.id} style={styles.card}>
-            <View style={styles.imagePlaceholder}>
-              <Image
-                source={require('@/src/assets/images/bike.png')} // reemplaza con tu imagen
-                style={{ width: 60, height: 60 }}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.price}>{plan.price}</Text>
+      {plans.map((plan) => (
+        <View key={plan.id} style={styles.planWrapper}>
+          <TouchableOpacity
+            onPress={() => toggleExpand(plan.id)}
+            activeOpacity={0.9}
+            style={[styles.planHeader, { backgroundColor: plan.baseColor }]}
+          >
             <Text style={styles.planTitle}>{plan.title}</Text>
-            <Text style={styles.description}>{plan.description}</Text>
-            <Text style={styles.highlight}>✓ {plan.highlight}</Text>
-            <TouchableOpacity style={styles.button}>
-              <Text style={styles.buttonText}>View details</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </View>
+          </TouchableOpacity>
+          {expandedPlan === plan.id && (
+            <View style={styles.planDetails}>
+              <Text style={styles.price}>{plan.price}</Text>
+              {plan.benefits.map((benefit, i) => (
+                <Text key={i} style={styles.benefitText}>{benefit}</Text>
+              ))}
+              <TouchableOpacity
+                style={styles.joinButton}
+                onPress={() => handleJoin(plan.title)}
+              >
+                <Text style={styles.joinButtonText}>Join now</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+      ))}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 20,
     backgroundColor: '#fff',
-    flex: 1,
   },
-  header: {
-    fontSize: 28,
+  title: {
+    fontSize: 26,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 30,
-    color: '#fff',
-    backgroundColor: '#FF7A00',
-    paddingVertical: 20,
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    paddingHorizontal: 20,
     marginBottom: 20,
-    backgroundColor: '#FF7A00',
-    color: '#fff',
   },
-  cardsContainer: {
-    padding: 20,
-  },
-  card: {
-    backgroundColor: '#fff',
+  planWrapper: {
     borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  imagePlaceholder: {
-    alignItems: 'center',
     marginBottom: 15,
+    overflow: 'hidden',
+    borderColor: '#ddd',
+    borderWidth: 1,
   },
-  price: {
-    color: '#FF6600',
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 10,
+  planHeader: {
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
   },
   planTitle: {
     fontSize: 20,
+    color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
   },
-  description: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 10,
+  planDetails: {
+    backgroundColor: '#fff',
+    padding: 15,
+  },
+  price: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: '#333',
+    marginBottom: 10,
   },
-  highlight: {
+  benefitText: {
     fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 15,
+    color: '#555',
+    marginBottom: 5,
   },
-  button: {
-    backgroundColor: '#1A1A1A',
+  joinButton: {
+    marginTop: 15,
+    backgroundColor: HelpGreen,
     borderRadius: 6,
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
+    alignItems: 'center',
   },
-  buttonText: {
+  joinButtonText: {
     color: '#fff',
     fontSize: 16,
   },

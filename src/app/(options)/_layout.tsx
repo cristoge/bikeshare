@@ -26,6 +26,14 @@ const OptionsLayout = () => {
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />
+      <Stack.Screen 
+      name="plans"
+      options={{ 
+        title: 'Plans', 
+        
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
       <Stack.Screen
       name="reservation"
       options={{ 
