@@ -39,7 +39,7 @@ const MembershipsScreen: React.FC = () => {
           <View key={plan.id} style={styles.card}>
             <View style={styles.imagePlaceholder}>
               <Image
-                source={require('./assets/bike.png')} // reemplaza con tu imagen
+                source={require('@/src/assets/images/bike.png')} // reemplaza con tu imagen
                 style={{ width: 60, height: 60 }}
                 resizeMode="contain"
               />
