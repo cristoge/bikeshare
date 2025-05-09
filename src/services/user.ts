@@ -137,3 +137,17 @@ export const userRents = async (userId: string) => {
   console.log('User rents:', data);
   return data;
 };
+
+export const updateUserName = async (userId: string, newName: string) => {
+  const { error } = await supabase
+    .from('user')
+    .update({ name: newName })
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Error updating user name:', error);
+    return false;
+  }
+
+  return true;
+};
