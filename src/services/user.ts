@@ -120,3 +120,34 @@ export const registerAndLogin = async (email: string, password: string, name: st
   }
   return user
 }
+
+
+export const userRents = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('rent')
+    .select('*')
+    .eq('user_id', userId)
+    .neq('status', 'completed'); // Solo rentas que NO estén completadas
+
+  if (error) {
+    console.error('Error fetching user rents:', error);
+    return null;
+  }
+
+  console.log('User rents:', data);
+  return data;
+};
+
+export const updateUserName = async (userId: string, newName: string) => {
+  const { error } = await supabase
+    .from('user')
+    .update({ name: newName })
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Error updating user name:', error);
+    return false;
+  }
+
+  return true;
+};

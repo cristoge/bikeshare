@@ -16,12 +16,20 @@ export default function ProfileScreen() {
       router.push("/(options)/profileCard");
     }
   };
+
+  const navigateToFreeRides = () => {
+    router.push("/(options)/FreeRides");
+  }
+
   const navigateToContact = () => {
     router.push("/(options)/contact");
   }
 
   const navigateToHelp = () => {
     router.push("/(options)/help");
+  }
+  const navigateToPlans = () => {
+    router.push("/(options)/plans");
   }
   
   return (
@@ -31,16 +39,16 @@ export default function ProfileScreen() {
           <Text style={styles.name}>Hi, {userName}</Text>
         </View>
         <View>
-          <UserStats userData={{ totalTrips: 120, co2Saved: 45 }} />
+          <UserStats/>
         </View>
         {/* Lista de botones */}
         <View style={styles.buttonList}>
             <TouchableOpacity style={styles.button} onPress={() => handleNavigate()}>
             <Icon name="user" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Profile</Text>
+            <Text style={styles.buttonText}>{user ? "Profile" : "Log In"}</Text>
             </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigateToFreeRides()}>
             <Icon name="history" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Ride History</Text>
           </TouchableOpacity>
@@ -55,7 +63,7 @@ export default function ProfileScreen() {
             <Text style={styles.buttonText}>Become a Member</Text>
           </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={() => navigateToPlans()}>
             <Icon name="clipboard" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Plans      </Text>
           </TouchableOpacity>

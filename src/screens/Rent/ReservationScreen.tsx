@@ -11,20 +11,23 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { createRent, createReservation } from '../../services/rent';
+import { useRouter } from 'expo-router';
 const bikeIcons = {
   normal: require('@/src/assets/images/bike.png'),
   electric: require('@/src/assets/images/electric-bike.png'),
   tandem: require('@/src/assets/images/tandem.png'),
 };
-
 export default function ReservationScreen() {
-  const { bikeId, model, locationName, userId } = useLocalSearchParams();
+  const { bikeId, model, locationName, userId,locationId } = useLocalSearchParams();
   const [mode, setMode] = useState<'rent' | 'reserve'>('rent');
   const [reservationTime, setReservationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-
+  
+  const navigateToHome = () => {
+    router.push("/(tabs)");
+  }
   const onTimeChange = (event: any, selectedDate?: Date): void => {
     const currentDate: Date = selectedDate || reservationTime;
     setShowPicker(Platform.OS === 'ios');
@@ -38,12 +41,13 @@ export default function ReservationScreen() {
 
     try {
       if (mode === 'rent') {
-        await createRent(userId as string, bikeId as string);
+        await createRent(userId as string, bikeId as string,locationId as string);
         alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
       } else {
         await createReservation(userId as string, bikeId as string);
         alert(`Reserva realizada para la bicicleta ${bikeId}`);
       }
+      navigateToHome();
     } catch (err) {
       alert('Error al procesar la acción');
       console.error(err);
