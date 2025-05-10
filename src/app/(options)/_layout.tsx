@@ -50,7 +50,15 @@ const OptionsLayout = () => {
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />
+      <Stack.Screen
+      name="updates"
+      options={{  
+        title: 'Updates', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
     </Stack>
+    
   );
 };
 

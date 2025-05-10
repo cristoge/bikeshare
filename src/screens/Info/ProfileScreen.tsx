@@ -16,7 +16,9 @@ export default function ProfileScreen() {
       router.push("/(options)/profileCard");
     }
   };
-
+  const navigateToUpdates = ()=>{
+    router.push('/(options)/updates')
+  }
   const navigateToFreeRides = () => {
     router.push("/(options)/FreeRides");
   }
@@ -58,9 +60,9 @@ export default function ProfileScreen() {
             <Text style={styles.buttonText}>Freerides</Text>
           </TouchableOpacity>
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
-            <Icon name="star" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Become a Member</Text>
+          <TouchableOpacity style={styles.button} onPress={()=> navigateToUpdates()}>
+            <Icon name="star" size={20} color="#333" style={styles.icon}/>
+            <Text style={styles.buttonText}>News & Updates</Text>
           </TouchableOpacity>
           <View style={styles.separator} />
           <TouchableOpacity style={styles.button} onPress={() => navigateToPlans()}>
