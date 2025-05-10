@@ -67,21 +67,22 @@ const MapScreen = () => {
     });
   };
 
-  useEffect(() => {
-    const loadBikesAndLocations = async () => {
-      try {
-        setLoading(true);
-        const bikeData = await getBikes();
-        setBikes(bikeData || []);
-        const locationData = await getLocation();
-        setLocations(locationData || []);
-      } catch (error) {
-        console.error("Error al cargar datos:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Función para cargar bicicletas y ubicaciones
+  const loadBikesAndLocations = async () => {
+    try {
+      setLoading(true);
+      const bikeData = await getBikes();
+      setBikes(bikeData || []);
+      const locationData = await getLocation();
+      setLocations(locationData || []);
+    } catch (error) {
+      console.error("Error al cargar datos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadBikesAndLocations();
   }, []);
 
@@ -140,12 +141,12 @@ const MapScreen = () => {
             <View style={styles.modalContainer}>
               <TouchableWithoutFeedback onPress={() => { }}>
                 <View style={styles.modalContent}>
-                <TouchableOpacity 
-  style={styles.closeButton} 
-  onPress={() => setModalVisible(false)}
->
-  <Icon name="close" size={24} color="#333" />
-</TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.closeButton} 
+                    onPress={() => setModalVisible(false)}
+                  >
+                    <Icon name="close" size={24} color="#333" />
+                  </TouchableOpacity>
                   <Text style={styles.stationName}>{selectedLocation.location_name}</Text>
                   {(() => {
                     const bikeCounts = countBikesByTypeAtLocation(selectedLocation.id);
@@ -225,6 +226,11 @@ const MapScreen = () => {
           </TouchableWithoutFeedback>
         </Modal>
       )}
+
+      {/* Botón de refresh flotante */}
+      <TouchableOpacity style={styles.refreshButton} onPress={loadBikesAndLocations}>
+        <Icon name="refresh" size={28} color="#fff" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -326,10 +332,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     zIndex: 1,
   },
-  closeButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
+  refreshButton: {
+    position: 'absolute',
+    bottom: 40,
+    right: 20,
+    backgroundColor: '#0FB88A',
+    borderRadius: 30,
+    padding: 15,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    zIndex: 999,
   },
 });
 

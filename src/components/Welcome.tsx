@@ -1,13 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, RefreshControl, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
 import { userRents } from '../services/user';
 import { endRent } from '../services/rent';
-import ImageList  from './Auth/ImageList';
-import { ScrollView } from 'react-native';
+import ImageList from './Auth/ImageList';
+
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
 const tips = [
@@ -28,9 +28,9 @@ export default function WelcomeScreen() {
     temperature: 0,
     condition: "Loading...",
   });
-
   const [ecoTip, setEcoTip] = useState("");
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
@@ -54,18 +54,31 @@ export default function WelcomeScreen() {
     })();
   }, []);
 
-  useEffect(() => {
+  const fetchUserRents = useCallback(async () => {
     if (!user || !user.id) return;
-    const fetchUserRents = async () => {
-      try {
-        const data = await userRents(user.id);
-        setUserRentData(data);
-      } catch (error) {
-        console.error("Error fetching user rents:", error);
-      }
-    };
-    fetchUserRents();
+    try {
+      const data = await userRents(user.id);
+      setUserRentData(data);
+    } catch (error) {
+      console.error("Error fetching user rents:", error);
+    }
   }, [user]);
+
+  useEffect(() => {
+    fetchUserRents();
+  }, [fetchUserRents]);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      await fetchUserRents();
+      setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
+    } catch (error) {
+      console.error("Error refreshing rents:", error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const fetchWeather = async (lat: number, lon: number) => {
     try {
@@ -123,48 +136,53 @@ export default function WelcomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-      <View>
-        <Text style={styles.helloText}>{getGreeting()},</Text>
-        <Text style={styles.nameText}>{userName} 👋</Text>
-      </View>
-
-      <View style={styles.card}>
-        <View style={styles.locationContainer}>
-          <MaterialCommunityIcons name="map-marker-radius" size={24} color="#007BFF" />
-          <Text style={styles.locationText}>{weatherData.location}</Text>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <View>
+          <Text style={styles.helloText}>{getGreeting()},</Text>
+          <Text style={styles.nameText}>{userName} 👋</Text>
         </View>
 
-        <Text style={styles.dateText}>{formatDate(currentDate)}</Text>
+        <View style={styles.card}>
+          <View style={styles.locationContainer}>
+            <MaterialCommunityIcons name="map-marker-radius" size={24} color="#007BFF" />
+            <Text style={styles.locationText}>{weatherData.location}</Text>
+          </View>
 
-        <View style={styles.weatherContainer}>
-          <MaterialCommunityIcons name="weather-partly-cloudy" size={48} color="#FFA500" />
-          <View>
-            <Text style={styles.temperatureText}>{weatherData.temperature}°C</Text>
-            <Text style={styles.conditionText}>{weatherData.condition}</Text>
+          <Text style={styles.dateText}>{formatDate(currentDate)}</Text>
+
+          <View style={styles.weatherContainer}>
+            <MaterialCommunityIcons name="weather-partly-cloudy" size={48} color="#FFA500" />
+            <View>
+              <Text style={styles.temperatureText}>{weatherData.temperature}°C</Text>
+              <Text style={styles.conditionText}>{weatherData.condition}</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {userRentData && userRentData.length > 0 && (
-        <View style={styles.rentCard}>
-          <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
-          <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
-          <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
+        {userRentData && userRentData.length > 0 && (
+          <View style={styles.rentCard}>
+            <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
 
-          <TouchableOpacity style={styles.endButton} onPress={handleEndRent}>
-            <Text style={styles.endButtonText}>End Ride</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.endButton} onPress={handleEndRent}>
+              <Text style={styles.endButtonText}>End Ride</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        <View style={styles.quoteContainer}>
+          <Text style={styles.quoteText}>💡 {ecoTip}</Text>
         </View>
-      )}
 
-      <View style={styles.quoteContainer}>
-        <Text style={styles.quoteText}>💡 {ecoTip}</Text>
-      </View>
         <Text style={styles.flatlistText}>Explore Our Bike Collection</Text>
         <ImageList />
-      <View>
-      </View>
+        <View />
       </ScrollView>
     </SafeAreaView>
   );
