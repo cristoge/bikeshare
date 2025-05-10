@@ -57,6 +57,13 @@ const OptionsLayout = () => {
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />
+      <Stack.Screen
+      name="recentRents"
+      options={{  
+        title: 'History', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
     </Stack>
     
   );
