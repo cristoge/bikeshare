@@ -8,18 +8,24 @@ export const UserStats = () => {
   const [totalRents, setTotalRents] = useState<number>(0);
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchTotalRents = async () => {
-      try {
-        const total = await getTotalRentsByUser(user.id);
-        setTotalRents(total);
-      } catch (error) {
-        console.error('Error fetching total rents:', error);
-      }
-    };
-    fetchTotalRents();
-  }, [user]);
+ useEffect(() => {
+  if (!user) {
+    setTotalRents(0); // Reinicia a 0 si no hay usuario
+    return;
+  }
+
+  const fetchTotalRents = async () => {
+    try {
+      const total = await getTotalRentsByUser(user.id);
+      setTotalRents(total);
+    } catch (error) {
+      console.error('Error fetching total rents:', error);
+    }
+  };
+
+  fetchTotalRents();
+}, [user]);
+
 
   const estimatedCO2Saved = (totalRents * 0.63).toFixed(2);
 
