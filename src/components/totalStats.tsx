@@ -27,10 +27,10 @@ export const UserStats = () => {
     <View style={styles.statsContainer}>
       <View style={styles.statItem}>
         <View style={styles.statIcon}>
-          <Ionicons name="car-outline" size={24} color="#2ecc71" />
+          <Ionicons name="bicycle-outline" size={24} color="#2ecc71" />
         </View>
         <Text style={styles.statValue}>{totalRents}</Text>
-        <Text style={styles.statLabel}>Viajes Totales</Text>
+        <Text style={styles.statLabel}>Total Rides</Text>
       </View>
 
       <View style={styles.divider} />
@@ -40,7 +40,7 @@ export const UserStats = () => {
           <MaterialCommunityIcons name="leaf" size={24} color="#27ae60" />
         </View>
         <Text style={styles.statValue}>{estimatedCO2Saved}kg</Text>
-        <Text style={styles.statLabel}>CO₂ Ahorrado</Text>
+        <Text style={styles.statLabel}>CO₂ Saved</Text>
       </View>
     </View>
   );

@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { getUserRents } from '../services/rent';
 import useUserStore from '../stores/userStore';
-
+import TripItem from './TripItem';
 export const RecentTrips = () => {
   const [trips, setTrips] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,30 +31,6 @@ export const RecentTrips = () => {
     fetchUserRents();
   }, [user.id]);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      weekday: 'short',
-      day: '2-digit',
-      month: 'short',
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    const date = new Date(timeString);
-    return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-  };
-
-  const renderTrip = ({ item }: any) => (
-    <View style={styles.tripCard}>
-      <Ionicons name="bicycle-outline" size={24} color="#0FB88A" style={{ marginBottom: 8 }} />
-      <Text style={styles.date}>{formatDate(item.start_date)}</Text>
-      <Text style={styles.time}>
-        {formatTime(item.start_date)} - {formatTime(item.end_date)}
-      </Text>
-    </View>
-  );
-
   if (loading) {
     return (
       <View style={styles.center}>
@@ -68,13 +50,15 @@ export const RecentTrips = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Viajes Recientes</Text>
-        <Ionicons name="chevron-forward" size={20} color="#666" />
+        <Text style={styles.title}>Recent Trips</Text>
+        <Ionicons name="navigate" size={24} color="#0FB88A" />
       </View>
 
       <FlatList
         data={trips}
-        renderItem={renderTrip}
+        renderItem={({ item, index }) => (
+          <TripItem item={item} index={index} />
+        )}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
         showsVerticalScrollIndicator={false}
@@ -112,28 +96,5 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 16,
-  },
-  tripCard: {
-    backgroundColor: '#fff',
-    padding: 16,
-    marginBottom: 12,
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-    alignItems: 'flex-start',
-  },
-  date: {
-    fontSize: 14,
-    color: '#888',
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  time: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
   },
 });
