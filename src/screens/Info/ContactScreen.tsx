@@ -54,16 +54,14 @@ const ContactScreen = () => {
       </TouchableOpacity>
 
       <Text style={styles.subheading}>Social Media:</Text>
-      <TouchableOpacity onPress={openFacebook}>
-        <Text style={styles.link}>Facebook: Bikeshare</Text>
-      </TouchableOpacity>
+
       <TouchableOpacity onPress={openInstagram}>
         <Text style={styles.link}>Instagram: @bikeshare</Text>
       </TouchableOpacity>
 
       <Text style={styles.subheading}>More Information:</Text>
       <TouchableOpacity onPress={openImpressum}>
-        <Text style={styles.link}>Legal: Impressum</Text>
+        <Text style={styles.link}>bikeshare.com</Text>
       </TouchableOpacity>
     </ScrollView>
   );
