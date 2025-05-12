@@ -56,7 +56,7 @@ const FreeRides = () => {
           <Text style={styles.successMessage}>🎉 You have {freeRides} free rides available.</Text>
         )}
 
-        <Text style={styles.validity}>Valid until May 20, 2025</Text>
+        <Text style={styles.validity}>Valid until May 20, 2026</Text>
       </View>
     </ScrollView>
   );
