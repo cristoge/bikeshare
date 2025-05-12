@@ -11,11 +11,19 @@ const ContactScreen = () => {
   };
 
   const openImpressum = () => {
-    Linking.openURL('');
+    Linking.openURL('https://yourwebsite.com/impressum');
   };
 
   const openChat = () => {
-    Linking.openURL('');
+    Linking.openURL('https://yourwebsite.com/chat');
+  };
+
+  const openFacebook = () => {
+    Linking.openURL('https://facebook.com/bikeshare');
+  };
+
+  const openInstagram = () => {
+    Linking.openURL('https://instagram.com/bikeshare');
   };
 
   return (
@@ -43,6 +51,17 @@ const ContactScreen = () => {
 
       <TouchableOpacity onPress={openChat}>
         <Text style={styles.link}>💬 Chat with us</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.subheading}>Social Media:</Text>
+
+      <TouchableOpacity onPress={openInstagram}>
+        <Text style={styles.link}>Instagram: @bikeshare</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.subheading}>More Information:</Text>
+      <TouchableOpacity onPress={openImpressum}>
+        <Text style={styles.link}>bikeshare.com</Text>
       </TouchableOpacity>
     </ScrollView>
   );

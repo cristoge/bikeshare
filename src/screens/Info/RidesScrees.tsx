@@ -1,14 +1,5 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  Image,
-  ScrollView,
-  TextInput,
-} from 'react-native';
 import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, TextInput } from 'react-native';
 
 const FreeRides = () => {
   const [inputCode, setInputCode] = useState('');
@@ -18,16 +9,18 @@ const FreeRides = () => {
   const handleRedeem = () => {
     if (inputCode.trim().toUpperCase() === VALID_CODE) {
       setFreeRides(5);
-      Alert.alert('Success!', 'You have received 5 free rides!');
+      Alert.alert('🎉 Congratulations!', 'You just scored 5 free rides! Enjoy your ride!');
     } else {
-      Alert.alert('Invalid Code', 'The code you entered is not valid.');
+      Alert.alert('Oops! 🤔', 'The code you entered is invalid. Try again!');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🎁 Special Promotion</Text>
-      <Text style={styles.paragraph}>Enter your promo code to receive exclusive benefits.</Text>
+      <Text style={styles.title}>🎁 Special Giveaway Alert!</Text>
+      <Text style={styles.paragraph}>
+        Ready to unlock some awesome free rides? Enter your promo code and ride in style, on us!
+      </Text>
 
       <View style={styles.card}>
         <Image
@@ -35,9 +28,9 @@ const FreeRides = () => {
           style={styles.logo}
         />
 
-        <Text style={styles.cardTitle}>Redeem the code to get your discount!</Text>
+        <Text style={styles.cardTitle}>Redeem Your Code and Ride Free! 🚴‍♀️</Text>
         <Text style={styles.cardDescription}>
-          Use the following code when paying with your credit card and enjoy the benefit.
+          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait—your adventure is just a click away!
         </Text>
 
         <TextInput
@@ -49,14 +42,14 @@ const FreeRides = () => {
         />
 
         <TouchableOpacity style={styles.button} onPress={handleRedeem}>
-          <Text style={styles.buttonText}>Redeem Now</Text>
+          <Text style={styles.buttonText}>Claim My Rides 🚀</Text>
         </TouchableOpacity>
 
         {freeRides > 0 && (
-          <Text style={styles.successMessage}>🎉 You have {freeRides} free rides available.</Text>
+          <Text style={styles.successMessage}>🎉 You’ve got {freeRides} free rides waiting for you!</Text>
         )}
 
-        <Text style={styles.validity}>Valid until May 20, 2025</Text>
+        <Text style={styles.validity}>Valid until May 20, 2026</Text>
       </View>
     </ScrollView>
   );

@@ -39,6 +39,42 @@ const updates = [
       'Solo use of the tandem bike is not allowed for safety reasons.',
     ],
   },
+  {
+    id: 'app-improvement',
+    title: 'App Improvement: Enhanced Performance ⚡',
+    version: '1.0.5',
+    description:
+      'We have made significant improvements to the app’s performance to provide you with a smoother and faster experience. Enjoy a more responsive interface and quicker loading times.',
+    features: [
+      'Optimized app performance for faster response time.',
+      'Improved memory usage to reduce app crashes.',
+      'UI/UX enhancements for a more fluid experience.',
+      'Bug fixes for a more stable platform.',
+    ],
+    availability: ['All Locations'],
+    notes: [
+      'Ensure you have the latest update for optimal performance.',
+      'If you experience any issues, please contact support.',
+    ],
+  },
+  {
+    id: 'annual-plan',
+    title: 'New Annual Plan Available 🎉',
+    version: '1.1.0',
+    description:
+      'We are introducing a new Annual Plan to provide more value for our loyal users. Enjoy discounted rates, priority customer support, and exclusive benefits with the new plan.',
+    features: [
+      'Get a full year of unlimited access at a discounted rate.',
+      'Priority customer support with direct assistance.',
+      'Access to exclusive features and updates.',
+      'Flexible cancellation and refund policy.',
+    ],
+    availability: ['All Locations'],
+    notes: [
+      'Sign up for the new plan directly in the app.',
+      'Terms and conditions apply.',
+    ],
+  },
 ];
 
 const UpdatesScreen: React.FC = () => {

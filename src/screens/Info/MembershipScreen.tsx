@@ -14,13 +14,14 @@ if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
 }
 
-type BillingCycle = 'monthly' | 'annually';
+type BillingCycle = 'monthly' | 'annually' | 'semi-annually';
 
 type Plan = {
   id: string;
   title: string;
   priceMonthly: string;
   priceAnnually: string;
+  priceSemiAnnually: string;
   benefits: string[];
 };
 
@@ -30,6 +31,7 @@ const plans: Plan[] = [
     title: 'Basic',
     priceMonthly: '€2.49 / month',
     priceAnnually: '€24.99 / year',
+    priceSemiAnnually: '€13.99 / 6 months',
     benefits: [
       'Access to standard bikes',
       'Up to 1 hour daily ride time',
@@ -41,6 +43,7 @@ const plans: Plan[] = [
     title: 'Plus',
     priceMonthly: '€3.99 / month',
     priceAnnually: '€39.99 / year',
+    priceSemiAnnually: '€22.99 / 6 months',
     benefits: [
       'Everything in Basic',
       'Up to 2 hours daily ride time',
@@ -53,6 +56,7 @@ const plans: Plan[] = [
     title: 'Premium',
     priceMonthly: '€5.49 / month',
     priceAnnually: '€54.99 / year',
+    priceSemiAnnually: '€30.99 / 6 months',
     benefits: [
       'Everything in Plus',
       'Unlimited ride time',
@@ -93,33 +97,25 @@ const MembershipsScreen: React.FC = () => {
         <View style={styles.billingToggle}>
           <TouchableOpacity
             onPress={() => setBillingCycle('monthly')}
-            style={[
-              styles.billingOption,
-              billingCycle === 'monthly' && styles.billingOptionSelected,
-            ]}
+            style={[styles.billingOption, billingCycle === 'monthly' && styles.billingOptionSelected]}
           >
-            <Text
-              style={[
-                styles.billingText,
-                billingCycle === 'monthly' && styles.billingTextSelected,
-              ]}
-            >
+            <Text style={[styles.billingText, billingCycle === 'monthly' && styles.billingTextSelected]}>
               Monthly
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setBillingCycle('annually')}
-            style={[
-              styles.billingOption,
-              billingCycle === 'annually' && styles.billingOptionSelected,
-            ]}
+            onPress={() => setBillingCycle('semi-annually')}
+            style={[styles.billingOption, billingCycle === 'semi-annually' && styles.billingOptionSelected]}
           >
-            <Text
-              style={[
-                styles.billingText,
-                billingCycle === 'annually' && styles.billingTextSelected,
-              ]}
-            >
+            <Text style={[styles.billingText, billingCycle === 'semi-annually' && styles.billingTextSelected]}>
+              Semi-Annually
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setBillingCycle('annually')}
+            style={[styles.billingOption, billingCycle === 'annually' && styles.billingOptionSelected]}
+          >
+            <Text style={[styles.billingText, billingCycle === 'annually' && styles.billingTextSelected]}>
               Annually
             </Text>
           </TouchableOpacity>
@@ -130,7 +126,11 @@ const MembershipsScreen: React.FC = () => {
             <TouchableOpacity onPress={() => togglePlan(plan.id)}>
               <Text style={styles.planTitle}>{getPlanLabel(plan.id)}</Text>
               <Text style={styles.planPrice}>
-                {billingCycle === 'monthly' ? plan.priceMonthly : plan.priceAnnually}
+                {billingCycle === 'monthly'
+                  ? plan.priceMonthly
+                  : billingCycle === 'annually'
+                  ? plan.priceAnnually
+                  : plan.priceSemiAnnually}
               </Text>
             </TouchableOpacity>
             {expandedPlan === plan.id && (
