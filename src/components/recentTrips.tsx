@@ -1,68 +1,67 @@
-import React from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
-const mockTrips = [
-  {
-    id: '1',
-    date: '24 Mar',
-    from: 'Casa',
-    to: 'Oficina',
-    price: '€8.50',
-  },
-  {
-    id: '2',
-    date: '23 Mar',
-    from: 'Oficina',
-    to: 'Supermercado',
-    price: '€12.30',
-  },
-  {
-    id: '3',
-    date: '22 Mar',
-    from: 'Gimnasio',
-    to: 'Casa',
-    price: '€7.80',
-  },
-];
-
+import { getUserRents } from '../services/rent';
+import useUserStore from '../stores/userStore';
+import TripItem from './TripItem';
 export const RecentTrips = () => {
-  const renderTrip = ({ item }: any) => (
-    <View style={styles.tripItem}>
-      <View style={styles.tripDate}>
-        <Text style={styles.dateText}>{item.date}</Text>
+  const [trips, setTrips] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    const fetchUserRents = async () => {
+      try {
+        const data = await getUserRents(user.id);
+        setTrips(data);
+      } catch (error) {
+        setError('Error al obtener los viajes');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserRents();
+  }, [user.id]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" color="#4A90E2" />
       </View>
-      
-      <View style={styles.tripDetails}>
-        <View style={styles.locationContainer}>
-          <View style={styles.locationItem}>
-            <View style={styles.dot} />
-            <Text style={styles.locationText}>{item.from}</Text>
-          </View>
-          <View style={styles.locationLine} />
-          <View style={styles.locationItem}>
-            <View style={[styles.dot, styles.dotDestination]} />
-            <Text style={styles.locationText}>{item.to}</Text>
-          </View>
-        </View>
-        
-        <Text style={styles.priceText}>{item.price}</Text>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.center}>
+        <Text style={styles.error}>{error}</Text>
       </View>
-    </View>
-  );
+    );
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Viajes Recientes</Text>
-        <Ionicons name="chevron-forward" size={20} color="#666" />
+        <Text style={styles.title}>Recent Trips</Text>
+        <Ionicons name="navigate" size={24} color="#0FB88A" />
       </View>
-      
+
       <FlatList
-        data={mockTrips}
-        renderItem={renderTrip}
-        keyExtractor={item => item.id}
-        scrollEnabled={false}
+        data={trips}
+        renderItem={({ item, index }) => (
+          <TripItem item={item} index={index} />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
@@ -70,73 +69,32 @@ export const RecentTrips = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    marginTop: 20,
-    paddingVertical: 15,
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 20,
+    flex: 1,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  error: {
+    color: 'red',
+    fontSize: 16,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 15,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#222',
   },
-  tripItem: {
-    flexDirection: 'row',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
-  tripDate: {
-    width: 50,
-    marginRight: 15,
-  },
-  dateText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  tripDetails: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  locationContainer: {
-    flex: 1,
-  },
-  locationItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: 3,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#2ecc71',
-    marginRight: 8,
-  },
-  dotDestination: {
-    backgroundColor: '#e74c3c',
-  },
-  locationLine: {
-    width: 2,
-    height: 15,
-    backgroundColor: '#ddd',
-    marginLeft: 3,
-  },
-  locationText: {
-    fontSize: 14,
-    color: '#333',
-  },
-  priceText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#333',
-    marginLeft: 15,
+  listContent: {
+    paddingBottom: 16,
   },
 });

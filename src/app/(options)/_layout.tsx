@@ -45,12 +45,26 @@ const OptionsLayout = () => {
       <Stack.Screen
       name="FreeRides"
       options={{  
-        title: 'Free Rides', 
-        headerShown: Platform.OS === 'ios' ? false : true,
+        title: 'Gifts', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen
+      name="updates"
+      options={{  
+        title: 'Updates', 
+        headerStyle:{backgroundColor:'#0FB88A'},
+      }} 
+      />
+      <Stack.Screen
+      name="recentRents"
+      options={{  
+        title: 'History', 
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />
     </Stack>
+    
   );
 };
 

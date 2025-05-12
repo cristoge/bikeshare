@@ -8,18 +8,24 @@ export const UserStats = () => {
   const [totalRents, setTotalRents] = useState<number>(0);
   const user = useUserStore((state) => state.user);
 
-  useEffect(() => {
-    if (!user) return;
-    const fetchTotalRents = async () => {
-      try {
-        const total = await getTotalRentsByUser(user.id);
-        setTotalRents(total);
-      } catch (error) {
-        console.error('Error fetching total rents:', error);
-      }
-    };
-    fetchTotalRents();
-  }, [user]);
+ useEffect(() => {
+  if (!user) {
+    setTotalRents(0); // Reinicia a 0 si no hay usuario
+    return;
+  }
+
+  const fetchTotalRents = async () => {
+    try {
+      const total = await getTotalRentsByUser(user.id);
+      setTotalRents(total);
+    } catch (error) {
+      console.error('Error fetching total rents:', error);
+    }
+  };
+
+  fetchTotalRents();
+}, [user]);
+
 
   const estimatedCO2Saved = (totalRents * 0.63).toFixed(2);
 
@@ -27,10 +33,10 @@ export const UserStats = () => {
     <View style={styles.statsContainer}>
       <View style={styles.statItem}>
         <View style={styles.statIcon}>
-          <Ionicons name="car-outline" size={24} color="#2ecc71" />
+          <Ionicons name="bicycle-outline" size={24} color="#2ecc71" />
         </View>
         <Text style={styles.statValue}>{totalRents}</Text>
-        <Text style={styles.statLabel}>Viajes Totales</Text>
+        <Text style={styles.statLabel}>Total Rides</Text>
       </View>
 
       <View style={styles.divider} />
@@ -40,7 +46,7 @@ export const UserStats = () => {
           <MaterialCommunityIcons name="leaf" size={24} color="#27ae60" />
         </View>
         <Text style={styles.statValue}>{estimatedCO2Saved}kg</Text>
-        <Text style={styles.statLabel}>CO₂ Ahorrado</Text>
+        <Text style={styles.statLabel}>CO₂ Saved</Text>
       </View>
     </View>
   );

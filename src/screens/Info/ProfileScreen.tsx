@@ -5,10 +5,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useRouter } from 'expo-router';
 import useUserStore from '../../stores/userStore';
 import { logout } from '../../services/user';
+
 export default function ProfileScreen() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
   const userName = user?.name || "Usuario"; 
+
   const handleNavigate = () => {
     if (!user) {
       router.push("/(auth)/login"); 
@@ -17,69 +19,103 @@ export default function ProfileScreen() {
     }
   };
 
+  const navigateToUpdates = () => {
+    router.push('/(options)/updates');
+  };
+
   const navigateToFreeRides = () => {
     router.push("/(options)/FreeRides");
-  }
+  };
+
+  const navigateToRecentRents = () => {
+    router.push('/(options)/recentRents');
+  };
 
   const navigateToContact = () => {
     router.push("/(options)/contact");
-  }
+  };
 
   const navigateToHelp = () => {
     router.push("/(options)/help");
-  }
+  };
+
   const navigateToPlans = () => {
     router.push("/(options)/plans");
-  }
-  
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={styles.header}>
-          <Text style={styles.name}>Hi, {userName}</Text>
-        </View>
+      <View style={styles.header}>
+  {user ? (
+    <>
+      <Text style={styles.name}>Welcome back, {userName} 👋</Text>
+      <Text style={styles.subtext}>Manage your account and activity</Text>
+    </>
+  ) : (
+    <>
+      <Text style={styles.name}>Welcome!</Text>
+      <Text style={styles.subtext}>Log in to access your profile</Text>
+    </>
+  )}
+</View>
+
         <View>
-          <UserStats/>
+          <UserStats />
         </View>
-        {/* Lista de botones */}
+
         <View style={styles.buttonList}>
-            <TouchableOpacity style={styles.button} onPress={() => handleNavigate()}>
+          <TouchableOpacity style={styles.button} onPress={handleNavigate}>
             <Icon name="user" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>{user ? "Profile" : "Log In"}</Text>
-            </TouchableOpacity>
-          <View style={styles.separator} />
-          <TouchableOpacity style={styles.button} onPress={() => navigateToFreeRides()}>
-            <Icon name="history" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Ride History</Text>
+            <Text style={styles.buttonText}>{user ? " Profile" : "Log In"}</Text>
           </TouchableOpacity>
+
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
-            <Icon name="bicycle" size={20} color="#333" style={styles.icon} />
+
+          {user && (
+            <>
+              <TouchableOpacity style={styles.button} onPress={navigateToRecentRents}>
+                <Icon name="history" size={20} color="#333" style={styles.icon} />
+                <Text style={styles.buttonText}>Ride History</Text>
+              </TouchableOpacity>
+              <View style={styles.separator} />
+            </>
+          )}
+
+          <TouchableOpacity style={styles.button} onPress={navigateToFreeRides}>
+            <Icon name="ticket" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Freerides</Text>
           </TouchableOpacity>
+
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button}>
-            <Icon name="star" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Become a Member</Text>
-          </TouchableOpacity>
-          <View style={styles.separator} />
-          <TouchableOpacity style={styles.button} onPress={() => navigateToPlans()}>
+
+          <TouchableOpacity style={styles.button} onPress={navigateToUpdates}>
             <Icon name="clipboard" size={20} color="#333" style={styles.icon} />
-            <Text style={styles.buttonText}>Plans      </Text>
+            <Text style={styles.buttonText}>News & Updates</Text>
           </TouchableOpacity>
+
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button} onPress={() => navigateToHelp()}>
+
+          <TouchableOpacity style={styles.button} onPress={navigateToPlans}>
+            <Icon name="star" size={20} color="#333" style={styles.icon} />
+            <Text style={styles.buttonText}>Plans</Text>
+          </TouchableOpacity>
+
+          <View style={styles.separator} />
+
+          <TouchableOpacity style={styles.button} onPress={navigateToHelp}>
             <Icon name="question-circle" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Help</Text>
           </TouchableOpacity>
+
           <View style={styles.separator} />
-          <TouchableOpacity style={styles.button} onPress={() => navigateToContact()}>
+
+          <TouchableOpacity style={styles.button} onPress={navigateToContact}>
             <Icon name="envelope" size={20} color="#333" style={styles.icon} />
             <Text style={styles.buttonText}>Contact Us</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Botón de log out al final */}
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={async () => {
@@ -100,7 +136,6 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'flex-start',
-    paddingVertical: 0,
     paddingTop: 40,
     paddingBottom: 20,
     paddingHorizontal: 20,
@@ -123,14 +158,14 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     color: '#333',
-    marginLeft: 10, 
+    marginLeft: 10,
   },
   icon: {
-    marginRight: 10, 
+    marginRight: 10,
   },
   separator: {
     height: 1,
-    backgroundColor: '#F0FFF4', 
+    backgroundColor: '#F0FFF4',
     marginVertical: 5,
   },
   logoutButton: {
@@ -139,5 +174,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
+  subtext: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 4,
+  },
 });
-

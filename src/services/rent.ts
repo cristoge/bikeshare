@@ -132,3 +132,22 @@ export const endRent = async (rentId: string, bikeId: string, endLocation_id='35
     throw error;
   }
 };
+
+//final
+
+export const getUserRents = async (userId: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("rent")
+      .select("*")
+      .eq("user_id", userId)
+      .not("end_date", "is", null)
+      .order("start_date", { ascending: false });
+    if (error) throw error;
+    console.log("User rents:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching user rents:", error);
+    throw error;
+  }
+};
