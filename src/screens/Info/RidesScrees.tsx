@@ -1,110 +1,153 @@
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  Image,
+  ScrollView,
+  TextInput,
+} from 'react-native';
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, Image } from 'react-native';
 
 const FreeRides = () => {
-  const [tripsAvailable, setTripsAvailable] = useState(0);
+  const [inputCode, setInputCode] = useState('');
+  const [freeRides, setFreeRides] = useState(0);
+  const VALID_CODE = 'STANDARD 20';
 
-  // Función para manejar el clic del botón
-  const handleGetFreeTrips = () => {
-    setTripsAvailable(5);  // Al hacer clic, se asignan 5 viajes gratuitos
-    Alert.alert('¡Éxito!', '¡Has obtenido 5 viajes gratis!');
+  const handleRedeem = () => {
+    if (inputCode.trim().toUpperCase() === VALID_CODE) {
+      setFreeRides(5);
+      Alert.alert('Success!', 'You have received 5 free rides!');
+    } else {
+      Alert.alert('Invalid Code', 'The code you entered is not valid.');
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>🎁 Special Promotion</Text>
+      <Text style={styles.paragraph}>Enter your promo code to receive exclusive benefits.</Text>
+
       <View style={styles.card}>
         <Image
-          source={{ uri: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Uber_logo_2018.png' }} // Puedes reemplazar con el logo que prefieras
+          source={require('../../assets/images/gift.png')}
           style={styles.logo}
         />
-        <Text style={styles.title}>¡Obtén 5 viajes gratis!</Text>
-        <Text style={styles.description}>20% cashback en todos los viajes al usar tu tarjeta de crédito Standard Chartered.</Text>
-        
-        <Text style={styles.couponCode}>Código de cupón: STANDARD 20</Text>
 
-        <TouchableOpacity style={styles.button} onPress={handleGetFreeTrips}>
-          <Text style={styles.buttonText}>Canjear ahora</Text>
+        <Text style={styles.cardTitle}>Redeem the code to get your discount!</Text>
+        <Text style={styles.cardDescription}>
+          Use the following code when paying with your credit card and enjoy the benefit.
+        </Text>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your code"
+          value={inputCode}
+          onChangeText={setInputCode}
+          autoCapitalize="characters"
+        />
+
+        <TouchableOpacity style={styles.button} onPress={handleRedeem}>
+          <Text style={styles.buttonText}>Redeem Now</Text>
         </TouchableOpacity>
 
-        {tripsAvailable > 0 && (
-          <Text style={styles.successMessage}>Tienes {tripsAvailable} viajes gratis disponibles.</Text>
+        {freeRides > 0 && (
+          <Text style={styles.successMessage}>🎉 You have {freeRides} free rides available.</Text>
         )}
-        
-        <Text style={styles.validity}>Válido hasta el 30 de enero 2025</Text>
+
+        <Text style={styles.validity}>Valid until May 20, 2025</Text>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0fb88a', // Fondo verde brillante
-    padding: 20,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 350,
-    backgroundColor: '#fff',
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-    elevation: 4,  // Sombra para darle el efecto de tarjeta
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 15,
+    flex: 1, // Make ScrollView take up the full screen
+    padding: 24,
+    backgroundColor: '#FFFFFF',
   },
   title: {
-    fontSize: 18,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#343A40',
     marginBottom: 10,
+    color: '#111827',
     textAlign: 'center',
   },
-  description: {
-    fontSize: 14,
-    color: '#6C757D',
-    marginBottom: 15,
+  paragraph: {
+    fontSize: 16,
+    color: '#4B5563',
+    marginBottom: 24,
+    lineHeight: 22,
     textAlign: 'center',
   },
-  couponCode: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#007BFF',
-    marginBottom: 20,
+  card: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 10,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
   },
-  button: {
-    backgroundColor: '#007BFF',
-    paddingVertical: 12,
-    paddingHorizontal: 40,
-    borderRadius: 5,
-    marginBottom: 10,
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginBottom: 16,
   },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  successMessage: {
-    marginTop: 15,
-    fontSize: 16,
-    color: '#28a745',
+  cardTitle: {
+    fontSize: 22,
     fontWeight: '600',
     textAlign: 'center',
+    marginBottom: 8,
+    color: '#111827',
+  },
+  cardDescription: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  input: {
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    marginBottom: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  button: {
+    backgroundColor: '#10B981',
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  successMessage: {
+    color: '#059669',
+    fontSize: 15,
+    textAlign: 'center',
+    fontWeight: '500',
+    marginBottom: 8,
   },
   validity: {
-    fontSize: 12,
-    color: '#495057',
-    marginTop: 15,
     textAlign: 'center',
+    fontSize: 14,
+    color: '#9CA3AF',
+    marginTop: 8,
   },
 });
 

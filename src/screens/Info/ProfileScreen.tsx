@@ -46,9 +46,19 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <View style={styles.header}>
-          <Text style={styles.name}>Hi, {userName}</Text>
-        </View>
+      <View style={styles.header}>
+  {user ? (
+    <>
+      <Text style={styles.name}>Welcome back, {userName} 👋</Text>
+      <Text style={styles.subtext}>Manage your account and activity</Text>
+    </>
+  ) : (
+    <>
+      <Text style={styles.name}>Welcome!</Text>
+      <Text style={styles.subtext}>Log in to access your profile</Text>
+    </>
+  )}
+</View>
 
         <View>
           <UserStats />
@@ -163,5 +173,10 @@ const styles = StyleSheet.create({
     marginTop: 20,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  subtext: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 4,
   },
 });
