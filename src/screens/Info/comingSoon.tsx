@@ -2,21 +2,38 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 
 const comingSoon = () => {
-  
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [buttonText, setButtonText] = useState('NOTIFY ME');
   const [timeLeft, setTimeLeft] = useState('Loading...');
   const intervalRef = useRef<NodeJS.Timeout>();
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, []);
+
   const calculateTimeLeft = () => {
     const launchDate = new Date();
-    launchDate.setDate(launchDate.getDate() + 14); 
+    launchDate.setDate(launchDate.getDate() + 14);
     const now = new Date();
     const diff = launchDate.getTime() - now.getTime();
 
     if (diff <= 0) {
-      setTimeLeft('Launching soon!');
+      setTimeLeft('Launching now!');
       if (intervalRef.current) clearInterval(intervalRef.current);
       return;
     }
@@ -30,18 +47,15 @@ const comingSoon = () => {
   };
 
   useEffect(() => {
-    
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2000,
       useNativeDriver: true,
     }).start();
 
-    
     calculateTimeLeft();
     intervalRef.current = setInterval(calculateTimeLeft, 1000);
 
-    
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -59,9 +73,16 @@ const comingSoon = () => {
           source={require('../assets/icon.png')}
           style={styles.image}
         />
-        <Text style={styles.title}>COMING SOON</Text>
+        <Animated.Text 
+          style={[
+            styles.title, 
+            { transform: [{ scale: pulseAnim }] }
+          ]}
+        >
+          COMING SOON
+        </Animated.Text>
         <Text style={styles.countdown}>{timeLeft}</Text>
-        <Text style={styles.subtitle}>We're working on something amazing!</Text>
+        <Text style={styles.subtitle}>We're building an exceptional experience for you</Text>
         
         <TouchableOpacity 
           style={styles.button}
@@ -71,6 +92,7 @@ const comingSoon = () => {
           <Text style={styles.buttonText}>{buttonText}</Text>
         </TouchableOpacity>
       </Animated.View>
+      <Text style={styles.footer}>© {new Date().getFullYear()} All Rights Reserved</Text>
     </View>
   );
 };
@@ -103,6 +125,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 2,
     marginTop: 10,
+    textAlign: 'center',
   },
   countdown: {
     fontSize: 24,
@@ -111,6 +134,7 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     letterSpacing: 1,
     fontVariant: ['tabular-nums'],
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
@@ -119,21 +143,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 40,
     lineHeight: 24,
+    fontStyle: 'italic',
   },
   image: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
     marginBottom: 20,
+    borderRadius: 20,
   },
   button: {
-    backgroundColor: '#2C3E50',
+    backgroundColor: '#10B88A', 
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
     marginTop: 25,
-    shadowColor: '#000',
+    shadowColor: '#10B88A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.3,
     shadowRadius: 6,
     elevation: 4,
   },
@@ -142,6 +168,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     letterSpacing: 1,
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    color: '#95A5A6',
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
 
