@@ -119,11 +119,10 @@ export default function ProfileScreen() {
         <TouchableOpacity
           style={styles.logoutButton}
           onPress={async () => {
-            await logout();
-            alert("You have logged out successfully!");
+            alert("Bikeshare © 2025. All rights reserved.");
           }}
         >
-          <Text style={styles.buttonText}>Log Out</Text>
+          <Text style={styles.buttonText}>© 2025 Bikeshare</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

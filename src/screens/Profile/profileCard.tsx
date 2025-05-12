@@ -3,14 +3,19 @@ import { View, Text, StyleSheet, TouchableOpacity, TextInput, Alert } from 'reac
 import { Feather } from '@expo/vector-icons';
 import useUserStore from '../../stores/userStore';
 import { updateUserName } from '@/src/services/user';
+import { logout } from '../../services/user';
+import { useRouter } from 'expo-router';
 
 const ProfileCard = () => {
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+  const router = useRouter()
 
   const [editing, setEditing] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
-
+  const navigateToWelcome = () => {
+    router.push('/(tabs)');
+  }; 
   const handleSave = async () => {
     if (!user?.id) return;
 
@@ -29,8 +34,9 @@ const ProfileCard = () => {
   const email = user?.email || 'Correo no disponible';
 
   const handleLogout = () => {
-    // Aquí iría la lógica de cierre de sesión, como limpiar el store o llamar a un servicio de logout
-    Alert.alert('Cerrar sesión', 'Aquí iría la lógica de logout');
+    logout();
+    navigateToWelcome()
+    alert("You have logged out successfully!");
   };
 
   return (
@@ -90,7 +96,7 @@ const ProfileCard = () => {
         {/* Botón de cerrar sesión */}
         <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={handleLogout}>
           <Feather name="log-out" size={20} color="#ff3b30" style={styles.icon} />
-          <Text style={styles.logoutText}>Cerrar sesión</Text>
+          <Text style={styles.logoutText}>Log out</Text>
         </TouchableOpacity>
       </View>
     </View>
