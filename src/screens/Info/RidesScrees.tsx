@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, TextInput } from 'react-native';
 
 const FreeRides = () => {
@@ -9,17 +9,17 @@ const FreeRides = () => {
   const handleRedeem = () => {
     if (inputCode.trim().toUpperCase() === VALID_CODE) {
       setFreeRides(5);
-      Alert.alert('¡Felicidades!', '¡Has recibido 5 viajes gratis!');
+      Alert.alert('🎉 Congratulations!', 'You just scored 5 free rides! Enjoy your ride!');
     } else {
-      Alert.alert('Código inválido', 'El código ingresado no es válido.');
+      Alert.alert('Oops! 🤔', 'The code you entered is invalid. Try again!');
     }
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>🎁 ¡Promoción Especial!</Text>
+      <Text style={styles.title}>🎁 Special Giveaway Alert!</Text>
       <Text style={styles.paragraph}>
-        ¡Solo por tiempo limitado! Ingresa tu código promocional y recibe increíbles beneficios.
+        Ready to unlock some awesome free rides? Enter your promo code and ride in style, on us!
       </Text>
 
       <View style={styles.card}>
@@ -28,28 +28,28 @@ const FreeRides = () => {
           style={styles.logo}
         />
 
-        <Text style={styles.cardTitle}>¡Canjea tu código y disfruta de tu beneficio!</Text>
+        <Text style={styles.cardTitle}>Redeem Your Code and Ride Free! 🚴‍♀️</Text>
         <Text style={styles.cardDescription}>
-          Usa el siguiente código al momento de pagar con tu tarjeta y obtén un beneficio exclusivo.
+          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait—your adventure is just a click away!
         </Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Ingresa tu código"
+          placeholder="Enter your code"
           value={inputCode}
           onChangeText={setInputCode}
           autoCapitalize="characters"
         />
 
         <TouchableOpacity style={styles.button} onPress={handleRedeem}>
-          <Text style={styles.buttonText}>Canjear ahora</Text>
+          <Text style={styles.buttonText}>Claim My Rides 🚀</Text>
         </TouchableOpacity>
 
         {freeRides > 0 && (
-          <Text style={styles.successMessage}>🎉 ¡Tienes {freeRides} viajes gratis disponibles!</Text>
+          <Text style={styles.successMessage}>🎉 You’ve got {freeRides} free rides waiting for you!</Text>
         )}
 
-        <Text style={styles.validity}>Válido hasta el 20 de mayo de 2026</Text>
+        <Text style={styles.validity}>Valid until May 20, 2026</Text>
       </View>
     </ScrollView>
   );
