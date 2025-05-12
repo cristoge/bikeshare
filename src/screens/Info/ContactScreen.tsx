@@ -28,30 +28,32 @@ const ContactScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Contáctanos</Text>
+      <Text style={styles.title}>Contact us</Text>
       <Text style={styles.paragraph}>
-        Estás bienvenido a llamarnos o enviarnos un correo electrónico con los detalles de tu alquiler. No usamos trucos ni magia oscura, tenemos a unos humanos muy agradables listos para atender tu solicitud. Llámanos o escríbenos, y haremos todo lo posible para que puedas salir nuevamente a las calles.
+        You are welcome to give us a call or send us an e-mail with your rental details. No tricks or
+        dark magic, we have some really lovely 100% humans in our stables ready to answer your request.
+        Give us a call or write to us, then we'll do our very best to get you back on the streets again.
       </Text>
 
       <TouchableOpacity onPress={openEmail}>
         <Text style={styles.link}>📧 contact@bikeshare.com</Text>
       </TouchableOpacity>
 
-      <Text style={styles.subheading}>Horario de atención:</Text>
-      <Text style={styles.text}>De lunes a domingo de 07:00 a 19:00 (CET)</Text>
+      <Text style={styles.subheading}>Opening hours:</Text>
+      <Text style={styles.text}>Monday - Sunday from 07:00 to 19:00 (CET)</Text>
 
       <TouchableOpacity onPress={openPhone}>
         <Text style={styles.link}>📞 +34 613 06 91 27</Text>
       </TouchableOpacity>
 
-      <Text style={styles.subheading}>Equipo de soporte disponible online:</Text>
-      <Text style={styles.text}>De lunes a domingo de 07:00 a 19:00 (CET)</Text>
+      <Text style={styles.subheading}>Support team available online:</Text>
+      <Text style={styles.text}>Monday - Sunday from 07:00 to 19:00 (CET)</Text>
 
       <TouchableOpacity onPress={openChat}>
-        <Text style={styles.link}>💬 Chatea con nosotros</Text>
+        <Text style={styles.link}>💬 Chat with us</Text>
       </TouchableOpacity>
 
-      <Text style={styles.subheading}>Redes Sociales:</Text>
+      <Text style={styles.subheading}>Social Media:</Text>
       <TouchableOpacity onPress={openFacebook}>
         <Text style={styles.link}>Facebook: Bikeshare</Text>
       </TouchableOpacity>
@@ -59,7 +61,7 @@ const ContactScreen = () => {
         <Text style={styles.link}>Instagram: @bikeshare</Text>
       </TouchableOpacity>
 
-      <Text style={styles.subheading}>Más información:</Text>
+      <Text style={styles.subheading}>More Information:</Text>
       <TouchableOpacity onPress={openImpressum}>
         <Text style={styles.link}>Legal: Impressum</Text>
       </TouchableOpacity>
