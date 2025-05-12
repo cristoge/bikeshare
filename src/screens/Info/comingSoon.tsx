@@ -1,16 +1,50 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, Image, StyleSheet, Animated, TouchableOpacity } from 'react-native';
 
 const comingSoon = () => {
-  const fadeAnim = React.useRef(new Animated.Value(0)).current;
-  const [buttonText, setButtonText] = React.useState('NOTIFY ME');
+  
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [buttonText, setButtonText] = useState('NOTIFY ME');
+  const [timeLeft, setTimeLeft] = useState('Loading...');
+  const intervalRef = useRef<NodeJS.Timeout>();
 
-  React.useEffect(() => {
+  
+  const calculateTimeLeft = () => {
+    const launchDate = new Date();
+    launchDate.setDate(launchDate.getDate() + 14); 
+    const now = new Date();
+    const diff = launchDate.getTime() - now.getTime();
+
+    if (diff <= 0) {
+      setTimeLeft('Launching soon!');
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      return;
+    }
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    setTimeLeft(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+  };
+
+  useEffect(() => {
+    
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2000,
       useNativeDriver: true,
     }).start();
+
+    
+    calculateTimeLeft();
+    intervalRef.current = setInterval(calculateTimeLeft, 1000);
+
+    
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, [fadeAnim]);
 
   const handlePress = () => {
@@ -22,10 +56,11 @@ const comingSoon = () => {
     <View style={styles.background}>
       <Animated.View style={[styles.card, { opacity: fadeAnim }]}>
         <Image 
-          source={require('../assets/coming-soon.png')}
+          source={require('../assets/icon.png')}
           style={styles.image}
         />
         <Text style={styles.title}>COMING SOON</Text>
+        <Text style={styles.countdown}>{timeLeft}</Text>
         <Text style={styles.subtitle}>We're working on something amazing!</Text>
         
         <TouchableOpacity 
@@ -69,10 +104,18 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     marginTop: 10,
   },
+  countdown: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#E74C3C',
+    marginVertical: 15,
+    letterSpacing: 1,
+    fontVariant: ['tabular-nums'],
+  },
   subtitle: {
     fontSize: 16,
     color: '#7F8C8D',
-    marginTop: 15,
+    marginTop: 5,
     textAlign: 'center',
     paddingHorizontal: 40,
     lineHeight: 24,
@@ -87,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 40,
     borderRadius: 30,
-    marginTop: 30,
+    marginTop: 25,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
