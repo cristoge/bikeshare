@@ -70,7 +70,7 @@ const comingSoon = () => {
     <View style={styles.background}>
       <Animated.View style={[styles.card, { opacity: fadeAnim }]}>
         <Image 
-          source={require('../assets/icon.png')}
+          source={require('../--/assets/images/icon.png')}
           style={styles.image}
         />
         <Animated.Text 
