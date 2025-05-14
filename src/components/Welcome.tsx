@@ -7,6 +7,7 @@ import useUserStore from '../stores/userStore';
 import { userRents, userLastRent } from '../services/user';
 import { endRent } from '../services/rent';
 import ImageList from './Auth/ImageList';
+import SafetyTips from './Auth/safetyTips';
 
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
@@ -199,7 +200,7 @@ export default function WelcomeScreen() {
         {userRentData && userRentData.length > 0 && (
           <View style={styles.rentCard}>
             <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
-            <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('es-ES')}</Text>
             <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
 
             <TouchableOpacity style={styles.endButton} onPress={handleEndRent}>
@@ -208,11 +209,11 @@ export default function WelcomeScreen() {
           </View>
         )}
         {/* !userRentData?.length && */}
-        {lastRent && (
+        { !userRentData?.length && lastRent && (
           <View style={styles.rentCard}>
             <Text style={styles.statusTitle}>🕓 Your Last Trip</Text>
-            <Text style={styles.statusItem}>📅 Start: {new Date(lastRent.start_date).toLocaleString('en-US')}</Text>
-            <Text style={styles.statusItem}>🏁 End: {new Date(lastRent.end_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(lastRent.start_date).toLocaleString('es-ES')}</Text>
+            <Text style={styles.statusItem}>🏁 End: {new Date(lastRent.end_date).toLocaleString('es-ES')}</Text>
             <Text style={styles.statusItem}>📌 Status: {lastRent.status}</Text>
           </View>
         )}
@@ -223,6 +224,8 @@ export default function WelcomeScreen() {
 
         <Text style={styles.flatlistText}>Explore Our Bike Collection</Text>
         <ImageList />
+        <Text style={styles.flatlistText}>Safety Tips</Text>
+        <SafetyTips />
         <View />
       </ScrollView>
     </SafeAreaView>
