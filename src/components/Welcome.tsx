@@ -4,7 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
-import { userRents } from '../services/user';
+import { userRents, userLastRent } from '../services/user';
 import { endRent } from '../services/rent';
 import ImageList from './Auth/ImageList';
 
@@ -50,15 +50,12 @@ export default function WelcomeScreen() {
   });
   const [ecoTip, setEcoTip] = useState("");
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
+  const [lastRent, setLastRent] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
-
-    const timer = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 60000);
-
+    const timer = setInterval(() => setCurrentDate(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
@@ -84,17 +81,29 @@ export default function WelcomeScreen() {
     }
   }, [user]);
 
+  const fetchLastRent = useCallback(async () => {
+    if (!user || !user.id) return;
+    try {
+      const data = await userLastRent(user.id);
+      setLastRent(data);
+    } catch (error) {
+      console.error("Error fetching last rent:", error);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchUserRents();
-  }, [fetchUserRents]);
+    fetchLastRent();
+  }, [fetchUserRents, fetchLastRent]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     try {
       await fetchUserRents();
+      await fetchLastRent();
       setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
     } catch (error) {
-      console.error("Error refreshing rents:", error);
+      console.error("Error refreshing:", error);
     } finally {
       setRefreshing(false);
     }
@@ -143,11 +152,13 @@ export default function WelcomeScreen() {
       }
 
       await endRent(rent.id, rent.bike_id);
-
       Alert.alert("Rent ended successfully");
 
       const updatedRents = await userRents(user.id);
       setUserRentData(updatedRents);
+
+      const latest = await userLastRent(user.id);
+      setLastRent(latest);
     } catch (error) {
       console.error("Error ending rent:", error);
       Alert.alert("Failed to end rent");
@@ -196,6 +207,15 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
         )}
+        {/* !userRentData?.length && */}
+        {lastRent && (
+          <View style={styles.rentCard}>
+            <Text style={styles.statusTitle}>🕓 Your Last Trip</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(lastRent.start_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>🏁 End: {new Date(lastRent.end_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>📌 Status: {lastRent.status}</Text>
+          </View>
+        )}
 
         <View style={styles.quoteContainer}>
           <Text style={styles.quoteText}>💡 {ecoTip}</Text>
@@ -215,7 +235,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F6F8',
   },
   scrollViewContent: {
-    paddingBottom: 80, // 👈 Esto agrega el espacio necesario al final
+    paddingBottom: 80,
   },
   helloText: {
     fontSize: 28,
