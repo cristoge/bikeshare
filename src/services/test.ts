@@ -32,6 +32,20 @@ export const getLocationDetailsById = async (locationId: string) => {
     longitude: data.longitude,
   };
 };
+
+export const getBikeModelById = async (bikeId: string) => {
+  const { data, error } = await supabase
+    .from('bike')
+    .select('model')
+    .eq('id', bikeId)
+    .single();
+
+  if (error) {
+    console.error(`Error al obtener el modelo de la bicicleta con id ${bikeId}:`, error);
+    return null;
+  }
+  return data.model;
+};
 export const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
   const R = 6371; 
   const dLat = (lat2 - lat1) * (Math.PI / 180); 
