@@ -137,6 +137,22 @@ export const userRents = async (userId: string) => {
   console.log('User rents:', data);
   return data;
 };
+export const userLastRent = async (userId: string) => {
+  const { data, error } = await supabase
+    .from('rent')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('status', 'completed')
+    .order('start_date', { ascending: false })
+    .limit(1);
+  if (error) {
+    console.error('Error fetching user last rent:', error);
+    return null;
+  }
+
+  console.log('User last rent:', data[0]);
+  return data[0];
+};
 
 export const updateUserName = async (userId: string, newName: string) => {
   const { error } = await supabase

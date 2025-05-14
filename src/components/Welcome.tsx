@@ -4,9 +4,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
 import * as Location from 'expo-location';
 import useUserStore from '../stores/userStore';
-import { userRents } from '../services/user';
+import { userRents, userLastRent } from '../services/user';
 import { endRent } from '../services/rent';
 import ImageList from './Auth/ImageList';
+import SafetyTips from './Auth/safetyTips';
 
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
 
@@ -50,15 +51,12 @@ export default function WelcomeScreen() {
   });
   const [ecoTip, setEcoTip] = useState("");
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
+  const [lastRent, setLastRent] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
-
-    const timer = setInterval(() => {
-      setCurrentDate(new Date());
-    }, 60000);
-
+    const timer = setInterval(() => setCurrentDate(new Date()), 60000);
     return () => clearInterval(timer);
   }, []);
 
@@ -84,17 +82,29 @@ export default function WelcomeScreen() {
     }
   }, [user]);
 
+  const fetchLastRent = useCallback(async () => {
+    if (!user || !user.id) return;
+    try {
+      const data = await userLastRent(user.id);
+      setLastRent(data);
+    } catch (error) {
+      console.error("Error fetching last rent:", error);
+    }
+  }, [user]);
+
   useEffect(() => {
     fetchUserRents();
-  }, [fetchUserRents]);
+    fetchLastRent();
+  }, [fetchUserRents, fetchLastRent]);
 
   const onRefresh = async () => {
     setRefreshing(true);
     try {
       await fetchUserRents();
+      await fetchLastRent();
       setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
     } catch (error) {
-      console.error("Error refreshing rents:", error);
+      console.error("Error refreshing:", error);
     } finally {
       setRefreshing(false);
     }
@@ -143,17 +153,33 @@ export default function WelcomeScreen() {
       }
 
       await endRent(rent.id, rent.bike_id);
-
       Alert.alert("Rent ended successfully");
 
       const updatedRents = await userRents(user.id);
       setUserRentData(updatedRents);
+
+      const latest = await userLastRent(user.id);
+      setLastRent(latest);
     } catch (error) {
       console.error("Error ending rent:", error);
       Alert.alert("Failed to end rent");
     }
   };
-
+  const getDuration = (start: string, end: string) => {
+    const diff = new Date(end).getTime() - new Date(start).getTime();
+    const minutes = Math.round(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+  
+    // Si la duración es menor a un minuto, retorna "?"
+    if (minutes < 1) return "< 1min";
+  
+    // Si no hay horas, solo muestra los minutos
+    if (hours === 0) return `${remainingMinutes} min`;
+  
+    // Si hay horas, muestra las horas y los minutos
+    return `${hours}h ${remainingMinutes} min`;
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -188,12 +214,21 @@ export default function WelcomeScreen() {
         {userRentData && userRentData.length > 0 && (
           <View style={styles.rentCard}>
             <Text style={styles.statusTitle}>🚴‍♂️ Active rental</Text>
-            <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('en-US')}</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(userRentData[0].start_date).toLocaleString('es-ES')}</Text>
             <Text style={styles.statusItem}>📌 Status: {userRentData[0].status === 'ongoing' ? 'In use' : userRentData[0].status}</Text>
 
             <TouchableOpacity style={styles.endButton} onPress={handleEndRent}>
               <Text style={styles.endButtonText}>End Ride</Text>
             </TouchableOpacity>
+          </View>
+        )}
+        {/* !userRentData?.length && */}
+        {user && !userRentData?.length && lastRent && (
+          <View style={styles.rentCard}>
+            <Text style={styles.statusTitle}>🕓 Your Last Trip</Text>
+            <Text style={styles.statusItem}>📅 Start: {new Date(lastRent.start_date).toLocaleString('es-ES')}</Text>
+            <Text style={styles.statusItem}>🏁 End: {new Date(lastRent.end_date).toLocaleString('es-ES')}</Text>
+            <Text style={styles.statusItem}>⏱️ Duration: {getDuration(lastRent.start_date, lastRent.end_date)}</Text>
           </View>
         )}
 
@@ -203,6 +238,8 @@ export default function WelcomeScreen() {
 
         <Text style={styles.flatlistText}>Explore Our Bike Collection</Text>
         <ImageList />
+        <Text style={styles.flatlistText}>Safety Tips</Text>
+        <SafetyTips />
         <View />
       </ScrollView>
     </SafeAreaView>
@@ -215,7 +252,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F6F8',
   },
   scrollViewContent: {
-    paddingBottom: 80, // 👈 Esto agrega el espacio necesario al final
+    paddingBottom: 80,
   },
   helloText: {
     fontSize: 28,
