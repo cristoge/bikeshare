@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { View, Text, Animated, StyleSheet, Easing } from 'react-native';
+import { View, Text, Animated, StyleSheet, Easing, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 
 interface Props {
   item: any;
@@ -9,6 +10,7 @@ interface Props {
 
 const TripItem = ({ item, index }: Props) => {
   const animation = useRef(new Animated.Value(0)).current;
+  const router = useRouter();
   const maxTranslate = 410;
   const duration = 3000 + index * 1000;
 
@@ -37,7 +39,7 @@ const TripItem = ({ item, index }: Props) => {
     const totalMinutes = Math.round(durationInMs / 60000);
 
     if (totalMinutes < 1) {
-      return '< 1min';
+      return 'menos de 1min';
     }
 
     const hours = Math.floor(totalMinutes / 60);
@@ -61,25 +63,42 @@ const TripItem = ({ item, index }: Props) => {
     extrapolate: 'clamp',
   });
 
+  const navigateToTripDetail = () => {
+    router.push({
+      pathname: '/(options)/Test',
+      params: {
+        id: item.id,
+        bike_id: item.bike_id,
+        user_id: item.user_id,
+        status: item.status,
+        start_date: item.start_date,
+        end_date: item.end_date,
+      },
+    });
+  };
+
   return (
-    <View style={styles.tripCard}>
-      <Animated.View style={{ transform: [{ translateX }] }}>
-        <Ionicons name="bicycle-outline" size={24} color="#0FB88A" style={{ marginBottom: 8 }} />
-      </Animated.View>
-      <Text style={styles.date}>{formatDate(item.start_date)}</Text>
-      <View style={styles.timeRow}>
-        <Text style={styles.time}>
-          {formatTime(item.start_date)} - {formatTime(item.end_date)}
-        </Text>
-        <Text style={styles.duration}>
-          {formatDuration(item.start_date, item.end_date)}
-        </Text>
+    <TouchableOpacity onPress={navigateToTripDetail}>
+      <View style={styles.tripCard}>
+        <Animated.View style={{ transform: [{ translateX }] }}>
+          <Ionicons name="bicycle-outline" size={24} color="#0FB88A" style={{ marginBottom: 8 }} />
+        </Animated.View>
+        <Text style={styles.date}>{formatDate(item.start_date)}</Text>
+        <View style={styles.timeRow}>
+          <Text style={styles.time}>
+            {formatTime(item.start_date)} - {formatTime(item.end_date)}
+          </Text>
+          <Text style={styles.duration}>
+            {formatDuration(item.start_date, item.end_date)}
+          </Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 export default TripItem;
+
 
 const styles = StyleSheet.create({
   tripCard: {

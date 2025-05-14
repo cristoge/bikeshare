@@ -1,41 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Alert } from 'react-native';
-import * as Location from 'expo-location';
+import React from 'react';
+import { View, Text } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 
-export function LoginScreen() {
-  const [location, setLocation] = useState<any>(null);
+const TripDetail = () => {
+  const {
+    id,
+    bike_id,
+    user_id,
+    status,
+    start_date,
+    end_date,
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permiso denegado', 'Se requiere permiso de localización para esta función');
-        return;
-      }
-    })();
-  }, []);
-
-  const getLocation = async () => {
-    try {
-      let loc = await Location.getCurrentPositionAsync({});
-      setLocation(loc);
-      console.log(loc);
-    } catch (error) {
-      console.log('Error al obtener la localización', error);
-    }
-  };
+  } = useLocalSearchParams();
 
   return (
-    <View>
-      <Button title="Obtener localización" onPress={getLocation} />
-      {location && (
-        <Text>
-          Latitud: {location.coords.latitude}, Longitud: {location.coords.longitude}
-        </Text>
-      )}
+    <View style={{ padding: 20 }}>
+      <Text>Trip ID: {id}</Text>
+      <Text>Bike ID: {bike_id}</Text>
+      <Text>User ID: {user_id}</Text>
+      <Text>Status: {status}</Text>
+      <Text>Start Date: {start_date}</Text>
+      <Text>End Date: {end_date}</Text>
     </View>
   );
-}
+};
 
-
-export default LoginScreen;
+export default TripDetail;
