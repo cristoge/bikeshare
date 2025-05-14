@@ -30,6 +30,26 @@ const TripItem = ({ item, index }: Props) => {
     });
   };
 
+  const formatDuration = (start: string, end: string) => {
+    const startTime = new Date(start).getTime();
+    const endTime = new Date(end).getTime();
+    const durationInMs = endTime - startTime;
+    const totalMinutes = Math.round(durationInMs / 60000);
+
+    if (totalMinutes < 1) {
+      return '< 1min';
+    }
+
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+
+    if (hours === 0) {
+      return `${minutes}min`;
+    }
+
+    return `${hours}h ${minutes.toString().padStart(2, '0')}min`;
+  };
+
   const formatTime = (timeString: string) => {
     const date = new Date(timeString);
     return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -47,9 +67,14 @@ const TripItem = ({ item, index }: Props) => {
         <Ionicons name="bicycle-outline" size={24} color="#0FB88A" style={{ marginBottom: 8 }} />
       </Animated.View>
       <Text style={styles.date}>{formatDate(item.start_date)}</Text>
-      <Text style={styles.time}>
-        {formatTime(item.start_date)} - {formatTime(item.end_date)}
-      </Text>
+      <View style={styles.timeRow}>
+        <Text style={styles.time}>
+          {formatTime(item.start_date)} - {formatTime(item.end_date)}
+        </Text>
+        <Text style={styles.duration}>
+          {formatDuration(item.start_date, item.end_date)}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -75,9 +100,20 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 4,
   },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    alignItems: 'center',
+  },
   time: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
+  },
+  duration: {
+    fontSize: 14,
+    color: '#555',
+    fontWeight: '500',
   },
 });

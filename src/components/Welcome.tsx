@@ -165,7 +165,21 @@ export default function WelcomeScreen() {
       Alert.alert("Failed to end rent");
     }
   };
-
+  const getDuration = (start: string, end: string) => {
+    const diff = new Date(end).getTime() - new Date(start).getTime();
+    const minutes = Math.round(diff / 60000);
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+  
+    // Si la duración es menor a un minuto, retorna "?"
+    if (minutes < 1) return "< 1min";
+  
+    // Si no hay horas, solo muestra los minutos
+    if (hours === 0) return `${remainingMinutes} min`;
+  
+    // Si hay horas, muestra las horas y los minutos
+    return `${hours}h ${remainingMinutes} min`;
+  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -209,12 +223,12 @@ export default function WelcomeScreen() {
           </View>
         )}
         {/* !userRentData?.length && */}
-        { !userRentData?.length && lastRent && (
+        {user && !userRentData?.length && lastRent && (
           <View style={styles.rentCard}>
             <Text style={styles.statusTitle}>🕓 Your Last Trip</Text>
             <Text style={styles.statusItem}>📅 Start: {new Date(lastRent.start_date).toLocaleString('es-ES')}</Text>
             <Text style={styles.statusItem}>🏁 End: {new Date(lastRent.end_date).toLocaleString('es-ES')}</Text>
-            <Text style={styles.statusItem}>📌 Status: {lastRent.status}</Text>
+            <Text style={styles.statusItem}>⏱️ Duration: {getDuration(lastRent.start_date, lastRent.end_date)}</Text>
           </View>
         )}
 
