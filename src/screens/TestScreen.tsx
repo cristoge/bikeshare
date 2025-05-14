@@ -143,27 +143,34 @@ export default function TripDetail() {
             <Text style={styles.info}>No route data available.</Text>
           )}
 
-          {startCoords && endCoords && (
-            <View style={styles.mapContainer}>
-              <MapView
-                style={styles.map}
-                initialRegion={{
-                  latitude: startCoords.latitude,
-                  longitude: startCoords.longitude,
-                  latitudeDelta: 0.04,
-                  longitudeDelta: 0.04,
-                }}
-              >
-                <Marker coordinate={startCoords} title={startLocation || 'Start'} />
-                <Marker coordinate={endCoords} title={endLocation || 'End'} />
-                <Polyline
-                  coordinates={[startCoords, endCoords]}
-                  strokeColor="#2980b9"
-                  strokeWidth={4}
-                />
-              </MapView>
-            </View>
-          )}
+{startCoords && endCoords && (
+  <View style={styles.mapContainer}>
+    <MapView
+      style={styles.map}
+      initialRegion={{
+        latitude: (startCoords.latitude + endCoords.latitude) / 2,
+        longitude: (startCoords.longitude + endCoords.longitude) / 2,
+        latitudeDelta: Math.max(
+          Math.abs(startCoords.latitude - endCoords.latitude) * 1.5,
+          0.05
+        ),
+        longitudeDelta: Math.max(
+          Math.abs(startCoords.longitude - endCoords.longitude) * 1.5,
+          0.05
+        ),
+      }}
+    >
+      <Marker coordinate={startCoords} title={startLocation || 'Start'} />
+      <Marker coordinate={endCoords} title={endLocation || 'End'} />
+      <Polyline
+        coordinates={[startCoords, endCoords]}
+        strokeColor="#2980b9"
+        strokeWidth={4}
+      />
+    </MapView>
+  </View>
+)}
+
         </>
       )}
     </ScrollView>
