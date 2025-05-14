@@ -35,21 +35,21 @@ export default function ReservationScreen() {
   };
   const handleReservation = async () => {
     if (!bikeId || !userId) {
-      alert('Faltan datos necesarios');
+      alert('Missing data');
       return;
     }
 
     try {
       if (mode === 'rent') {
         await createRent(userId as string, bikeId as string,locationId as string);
-        alert(`Alquiler iniciado para la bicicleta ${bikeId}`);
+        alert(`Rental started`);
       } else {
         await createReservation(userId as string, bikeId as string);
-        alert(`Reserva realizada para la bicicleta ${bikeId}`);
+        alert(`Reservation created`);
       }
       navigateToHome();
     } catch (err) {
-      alert('Error al procesar la acción');
+      alert('Error processing action');
       console.error(err);
     }
   };
