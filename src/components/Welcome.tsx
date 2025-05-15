@@ -7,6 +7,7 @@ import {
   RefreshControl,
   ScrollView,
   ActivityIndicator,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -19,6 +20,7 @@ import ImageList from './Auth/ImageList';
 import SafetyTips from './Auth/safetyTips';
 
 const API_KEY = process.env.EXPO_PUBLIC_WEATHER || '';
+
 
 const tips = [
   "Using a bike instead of a car helps reduce CO₂ emissions.",
@@ -62,7 +64,7 @@ export default function WelcomeScreen() {
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
   const [lastRent, setLastRent] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [endingTrip, setEndingTrip] = useState(false); // ⬅️ nuevo estado
+  const [endingTrip, setEndingTrip] = useState(false);
 
   useEffect(() => {
     setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
@@ -194,16 +196,6 @@ export default function WelcomeScreen() {
     return `${hours}h ${remainingMinutes} min`;
   };
 
-  // 🌀 Pantalla de carga mientras se termina el viaje
-  if (endingTrip) {
-    return (
-      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center', height: '100%' }]}>
-        <ActivityIndicator size="large" color="#0FB88A" />
-        <Text style={{ fontSize: 20, marginTop: 16, color: '#333' }}>Ending your ride...</Text>
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -265,6 +257,21 @@ export default function WelcomeScreen() {
         <Text style={styles.flatlistText}>Safety Tips</Text>
         <SafetyTips />
       </ScrollView>
+
+      {/* Modal flotante para terminar el viaje */}
+      <Modal
+  visible={endingTrip}
+  transparent
+  animationType="fade"
+  onRequestClose={() => {}}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContent}>
+      <ActivityIndicator size="large" color="#0FB88A" />
+      <Text style={styles.loadingText}>Ending your ride...</Text>
+    </View>
+  </View>
+</Modal>
     </SafeAreaView>
   );
 }
@@ -273,6 +280,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
     backgroundColor: '#F4F6F8',
+
   },
   scrollViewContent: {
     paddingBottom: 80,
@@ -379,6 +387,22 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 24,
     marginBottom: 12,
-    color: '#444',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    padding: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 18,
+    color: 'white',
   },
 });
