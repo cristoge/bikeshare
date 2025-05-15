@@ -11,7 +11,7 @@ const FreeRides = () => {
       setFreeRides(5);
       Alert.alert('🎉 Congratulations!', 'You just scored 5 free rides! Enjoy your ride!');
     } else {
-      Alert.alert('Oops! 🤔', 'The code you entered is invalid. Try again!');
+      Alert.alert('Oops!', 'The code you entered is invalid. Try again!');
     }
   };
 
@@ -30,7 +30,7 @@ const FreeRides = () => {
 
         <Text style={styles.cardTitle}>Redeem Your Code and Ride Free! 🚴‍♀️</Text>
         <Text style={styles.cardDescription}>
-          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait—your adventure is just a click away!
+          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait your adventure is just a click away!
         </Text>
 
         <TextInput

@@ -8,6 +8,7 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Alert,
 } from 'react-native';
 
 if (Platform.OS === 'android') {
@@ -86,6 +87,12 @@ const MembershipsScreen: React.FC = () => {
     }
   };
 
+  const handleRedeem = () => {
+  Alert.alert('😱 Uh-oh!','Our servers are on a coffee break ☕. Hang tight and try again in a few minutes.'
+  );
+};
+
+
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -140,7 +147,7 @@ const MembershipsScreen: React.FC = () => {
                     • {benefit}
                   </Text>
                 ))}
-                <TouchableOpacity style={styles.joinButton}>
+                <TouchableOpacity style={styles.joinButton} onPress={handleRedeem}>
                   <Text style={styles.joinButtonText}>Join Now</Text>
                 </TouchableOpacity>
               </View>
