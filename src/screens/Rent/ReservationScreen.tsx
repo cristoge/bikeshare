@@ -8,6 +8,8 @@ import {
   ScrollView,
   Platform,
   Button,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -24,7 +26,7 @@ export default function ReservationScreen() {
   const [mode, setMode] = useState<'rent' | 'reserve'>('rent');
   const [reservationTime, setReservationTime] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
-  
+  const [creatingTrip, setCreatingTrip] = useState(false); 
   const navigateToHome = () => {
     router.push("/(tabs)");
   }
@@ -33,24 +35,36 @@ export default function ReservationScreen() {
     setShowPicker(Platform.OS === 'ios');
     setReservationTime(currentDate);
   };
+  const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
   const handleReservation = async () => {
     if (!bikeId || !userId) {
       alert('Missing data');
       return;
     }
-
+  
     try {
+      setCreatingTrip(true);
+  
+      // Esperar 3 segundos antes de crear la reserva o el alquiler
+      await wait(3000);
+  
       if (mode === 'rent') {
         await createRent(userId as string, bikeId as string,locationId as string);
-        alert(`Rental started`);
+        alert('Rental started');
       } else {
         await createReservation(userId as string, bikeId as string);
-        alert(`Reservation created`);
+        alert('Reservation created');
       }
+  
+      setCreatingTrip(false);
+  
       navigateToHome();
+  
     } catch (err) {
       alert('Error processing action');
       console.error(err);
+      setCreatingTrip(false);
     }
   };
 
@@ -119,6 +133,19 @@ export default function ReservationScreen() {
           <Text style={styles.reserveText}>{mode === 'rent' ? 'Rent now' : 'Reserve'}</Text>
         </TouchableOpacity>
       </ScrollView>
+      <Modal
+  visible={creatingTrip}
+  transparent
+  animationType="fade"
+  onRequestClose={() => {}}
+>
+  <View style={styles.modalOverlay}>
+    <View style={styles.modalContent}>
+      <ActivityIndicator size="large" color="#0FB88A" />
+      <Text style={styles.loadingText}>Your journey is about to begin…</Text>
+    </View>
+  </View>
+</Modal>
     </SafeAreaView>
   );
 }
@@ -229,5 +256,23 @@ const styles = StyleSheet.create({
   },
   inactiveText: {
     color: '#333',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    padding: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '80%',
+  },
+  loadingText: {
+    marginTop: 20,
+    fontSize: 18,
+    color: 'white',
   },
 });
