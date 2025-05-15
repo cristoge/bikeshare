@@ -16,45 +16,22 @@ if (Platform.OS === 'android') {
 
 const updates = [
   {
-    id: 'tandem-bike',
-    title: 'New Bike Added: Tandem 🚲',
-    version: '0.6.0',
+    id: 'server-maintenance',
+    title: 'Server Maintenance 🚧',
+    version: '1.2.0',
     description:
-      'We’re excited to announce the arrival of the new Tandem Bike, designed for you to enjoy rides with a friend or partner. Here’s everything you need to know:',
+      'Our servers are currently down for maintenance and will remain closed until June 1st. We’re working hard to bring everything back online safely and securely.',
     features: [
-      '2 seats & 2 sets of pedals: Built for two people riding together.',
-      'Special reservation system: Invite another user to join the ride.',
-      'Enhanced stability: Reinforced wheels and extended frame.',
-      'Adjustable power assist: Adapts to the combined weight and slope.',
-      'Dual safety gear: Two helmets and synchronized braking.',
+      'Critical security patches applied',
+      'Database optimizations in progress',
+      'Infrastructure upgrades under way',
+      'Stress testing for improved stability',
     ],
-    availability: [
-      'Central Park',
-      'North Station',
-      'Riverside Promenade',
-    ],
+    availability: ['Barcelona'],
     notes: [
-      'Only the booking user can control the bike.',
-      'The second rider must accept the invite before the ride.',
-      'Solo use of the tandem bike is not allowed for safety reasons.',
-    ],
-  },
-  {
-    id: 'app-improvement',
-    title: 'App Improvement: Enhanced Performance ⚡',
-    version: '1.0.5',
-    description:
-      'We have made significant improvements to the app’s performance to provide you with a smoother and faster experience. Enjoy a more responsive interface and quicker loading times.',
-    features: [
-      'Optimized app performance for faster response time.',
-      'Improved memory usage to reduce app crashes.',
-      'UI/UX enhancements for a more fluid experience.',
-      'Bug fixes for a more stable platform.',
-    ],
-    availability: ['All Locations'],
-    notes: [
-      'Ensure you have the latest update for optimal performance.',
-      'If you experience any issues, please contact support.',
+      'Full service will resume on June 1st at 00:00 UTC.',
+      'You may experience intermittent access during brief testing windows.',
+      'Thank you for your patience and understanding!',
     ],
   },
   {
@@ -69,16 +46,64 @@ const updates = [
       'Access to exclusive features and updates.',
       'Flexible cancellation and refund policy.',
     ],
-    availability: ['All Locations'],
+    availability: ['Barcelona'],
     notes: [
       'Sign up for the new plan directly in the app.',
       'Terms and conditions apply.',
     ],
   },
+  {
+    id: 'app-improvement',
+    title: 'App Improvement: Enhanced Performance ⚡',
+    version: '1.0.5',
+    description:
+      'We have made significant improvements to the app’s performance to provide you with a smoother and faster experience. Enjoy a more responsive interface and quicker loading times.',
+    features: [
+      'Optimized app performance for faster response time.',
+      'Improved memory usage to reduce app crashes.',
+      'UI/UX enhancements for a more fluid experience.',
+      'Bug fixes for a more stable platform.',
+    ],
+    availability: ['Barcelona'],
+    notes: [
+      'Ensure you have the latest update for optimal performance.',
+      'If you experience any issues, please contact support.',
+    ],
+  },
+  {
+    id: 'tandem-bike',
+    title: 'New Bike Added: Tandem 🚲',
+    version: '0.6.0',
+    description:
+      'We’re excited to announce the arrival of the new Tandem Bike, designed for you to enjoy rides with a friend or partner. Here’s everything you need to know:',
+    features: [
+      '2 seats & 2 sets of pedals: Built for two people riding together.',
+      'Special reservation system: Invite another user to join the ride.',
+      'Enhanced stability: Reinforced wheels and extended frame.',
+      'Adjustable power assist: Adapts to the combined weight and slope.',
+      'Dual safety gear: Two helmets and synchronized braking.',
+    ],
+    availability: ['Barcelona'],
+    notes: [
+      'Only the booking user can control the bike.',
+      'The second rider must accept the invite before the ride.',
+      'Solo use of the tandem bike is not allowed for safety reasons.',
+    ],
+  },
 ];
 
 const UpdatesScreen: React.FC = () => {
-  const [expandedUpdate, setExpandedUpdate] = useState<string | null>(null);
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * UpdatesScreen component displays a list of updates and news available for the app.
+ * Users can view details about each update, including the version, description,
+ * key features, availability, and important notes. The updates can be expanded
+ * or collapsed by tapping on them.
+ *
+ * @returns A React component that renders a list of updates with expandable details.
+ */
+
+/*******  61daa7bc-a8b9-499e-8ba4-a0a99fdeef0d  *******/  const [expandedUpdate, setExpandedUpdate] = useState<string | null>(null);
 
   const toggleUpdate = (id: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
