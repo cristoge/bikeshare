@@ -66,7 +66,8 @@ const OptionsLayout = () => {
       <Stack.Screen
       name="Test"
       options={{  
-        title: 'Test', 
+        title: '',
+        
         headerStyle:{backgroundColor:'#0FB88A'},
       }} 
       />

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase"
-
+import { simulationLocation } from "../utils/generateId";
 export const getBikes = async () => {
   const { data, error } = await supabase
     .from('bike')
@@ -25,7 +25,7 @@ export const changeBikeStatus = async (bikeId: string, status: string) => {
   console.log(data)
   return data
 }
-export const changeLocation = async (bikeId: string, location='3545f44b-72c3-4c94-8865-9a34fa5caebc') => {
+export const changeLocation = async (bikeId: string, location=simulationLocation) => {
   const { data, error } = await supabase
     .from('bike')
     .update({current_location_id: location })

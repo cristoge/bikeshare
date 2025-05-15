@@ -9,7 +9,7 @@ import { logout } from '../../services/user';
 export default function ProfileScreen() {
   const router = useRouter();
   const user = useUserStore((state) => state.user);
-  const userName = user?.name || "Usuario"; 
+  const userName = user?.name || "User"; 
 
   const handleNavigate = () => {
     if (!user) {

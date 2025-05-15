@@ -39,7 +39,7 @@ const TripItem = ({ item, index }: Props) => {
     const totalMinutes = Math.round(durationInMs / 60000);
 
     if (totalMinutes < 1) {
-      return 'menos de 1min';
+      return '< 1min';
     }
 
     const hours = Math.floor(totalMinutes / 60);

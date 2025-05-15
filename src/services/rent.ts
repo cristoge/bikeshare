@@ -2,6 +2,7 @@ import { generateTimestampz,calculateEndTime } from "../utils/generateTimestampz
 import { supabase } from "./supabase";
 import { changeBikeStatus, changeLocation } from "./bike";
 //la funcion para crear el alquiler funciona
+import { simulationLocation } from "../utils/generateId";
 export const createRent = async (userId: string, bikeId: string, startLocation_id: string) => {
   try {
     const date = generateTimestampz();
@@ -100,7 +101,7 @@ export const getTotalRentsByUser = async (userId: string): Promise<number> => {
   }
 };
 
-export const endRent = async (rentId: string, bikeId: string, endLocation_id='3545f44b-72c3-4c94-8865-9a34fa5caebc') => {
+export const endRent = async (rentId: string, bikeId: string, endLocation_id=simulationLocation) => {
   try {
     const date = generateTimestampz();
 

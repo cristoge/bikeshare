@@ -24,14 +24,14 @@ const ProfileCard = () => {
     if (success) {
       setUser({ ...user, name: newName });
       setEditing(false);
-      Alert.alert('Éxito', 'Nombre actualizado correctamente');
+      Alert.alert('Success', 'Name updated successfully');
     } else {
-      Alert.alert('Error', 'No se pudo actualizar el nombre');
+      Alert.alert('Error', 'Failed to update name');
     }
   };
 
-  const dni = user?.dni || 'Sin DNI';
-  const email = user?.email || 'Correo no disponible';
+  const dni = user?.dni || 'No DNI';
+  const email = user?.email || 'Email not available';
 
   const handleLogout = () => {
     logout();
@@ -42,7 +42,7 @@ const ProfileCard = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.name}>Perfil</Text>
+        <Text style={styles.name}>Profile</Text>
       </View>
 
       <View style={styles.buttonList}>
@@ -53,11 +53,11 @@ const ProfileCard = () => {
               value={newName}
               onChangeText={setNewName}
               style={styles.input}
-              placeholder="Nuevo nombre"
+              placeholder="New name"
               placeholderTextColor="#aaa"
             />
           ) : (
-            <Text style={styles.buttonText}>{user?.name || 'Nombre no disponible'}</Text>
+            <Text style={styles.buttonText}>{user?.name || 'Name not available'}</Text>
           )}
           <View style={styles.editActions}>
             {editing ? (
