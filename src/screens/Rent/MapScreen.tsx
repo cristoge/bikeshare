@@ -201,7 +201,7 @@ const MapScreen = () => {
                     title="Continue"
                     onPress={() => {
                       if (!user) {
-                        alert('Por favor, inicia sesión para reservar una bicicleta.');
+                        alert('Please log in to reserve a bike.');
                         return;
                       }
 
@@ -216,7 +216,7 @@ const MapScreen = () => {
                         navigateToEjemplo(selectedBike);
                         setModalVisible(false);
                       } else {
-                        alert('No hay bicicletas disponibles de ese tipo.');
+                        alert('No bikes of this type are available.');
                       }
                     }}
                   />
