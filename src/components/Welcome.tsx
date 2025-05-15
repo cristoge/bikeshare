@@ -1,4 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, Alert, RefreshControl, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  RefreshControl,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useEffect, useCallback } from 'react';
@@ -53,6 +62,7 @@ export default function WelcomeScreen() {
   const [userRentData, setUserRentData] = useState<any[] | null>(null);
   const [lastRent, setLastRent] = useState<any | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [endingTrip, setEndingTrip] = useState(false); // ⬅️ nuevo estado
 
   useEffect(() => {
     setEcoTip(tips[Math.floor(Math.random() * tips.length)]);
@@ -144,42 +154,56 @@ export default function WelcomeScreen() {
 
   const handleEndRent = async () => {
     try {
-      const location = await Location.getCurrentPositionAsync({});
-      const rent = userRentData?.[0];
+      setEndingTrip(true);
+      setTimeout(async () => {
+        const location = await Location.getCurrentPositionAsync({});
+        const rent = userRentData?.[0];
 
-      if (!rent) {
-        Alert.alert("No active rent found");
-        return;
-      }
+        if (!rent) {
+          Alert.alert("No active rent found");
+          setEndingTrip(false);
+          return;
+        }
 
-      await endRent(rent.id, rent.bike_id);
-      Alert.alert("Rent ended successfully");
+        await endRent(rent.id, rent.bike_id);
+        Alert.alert("Rent ended successfully");
 
-      const updatedRents = await userRents(user.id);
-      setUserRentData(updatedRents);
+        const updatedRents = await userRents(user.id);
+        setUserRentData(updatedRents);
 
-      const latest = await userLastRent(user.id);
-      setLastRent(latest);
+        const latest = await userLastRent(user.id);
+        setLastRent(latest);
+
+        setEndingTrip(false);
+      }, 3000);
     } catch (error) {
       console.error("Error ending rent:", error);
       Alert.alert("Failed to end rent");
+      setEndingTrip(false);
     }
   };
+
   const getDuration = (start: string, end: string) => {
     const diff = new Date(end).getTime() - new Date(start).getTime();
     const minutes = Math.round(diff / 60000);
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
-  
-    // Si la duración es menor a un minuto, retorna "?"
+
     if (minutes < 1) return "< 1min";
-  
-    // Si no hay horas, solo muestra los minutos
     if (hours === 0) return `${remainingMinutes} min`;
-  
-    // Si hay horas, muestra las horas y los minutos
     return `${hours}h ${remainingMinutes} min`;
   };
+
+  // 🌀 Pantalla de carga mientras se termina el viaje
+  if (endingTrip) {
+    return (
+      <SafeAreaView style={[styles.container, { justifyContent: 'center', alignItems: 'center', height: '100%' }]}>
+        <ActivityIndicator size="large" color="#0FB88A" />
+        <Text style={{ fontSize: 20, marginTop: 16, color: '#333' }}>Ending your ride...</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -222,7 +246,7 @@ export default function WelcomeScreen() {
             </TouchableOpacity>
           </View>
         )}
-        {/* !userRentData?.length && */}
+
         {user && !userRentData?.length && lastRent && (
           <View style={styles.rentCard}>
             <Text style={styles.statusTitle}>🕓 Your Last Trip</Text>
@@ -240,7 +264,6 @@ export default function WelcomeScreen() {
         <ImageList />
         <Text style={styles.flatlistText}>Safety Tips</Text>
         <SafetyTips />
-        <View />
       </ScrollView>
     </SafeAreaView>
   );
