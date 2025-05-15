@@ -18,7 +18,7 @@ const updates = [
   {
     id: 'server-maintenance',
     title: 'Server Maintenance 🚧',
-    version: '1.2.0',
+    version: '1.1.1',
     description:
       'Our servers are currently down for maintenance and will remain closed until June 1st. We’re working hard to bring everything back online safely and securely.',
     features: [
@@ -55,7 +55,7 @@ const updates = [
   {
     id: 'app-improvement',
     title: 'App Improvement: Enhanced Performance ⚡',
-    version: '1.0.5',
+    version: '1.0.1',
     description:
       'We have made significant improvements to the app’s performance to provide you with a smoother and faster experience. Enjoy a more responsive interface and quicker loading times.',
     features: [
@@ -93,17 +93,8 @@ const updates = [
 ];
 
 const UpdatesScreen: React.FC = () => {
-/*************  ✨ Windsurf Command ⭐  *************/
-/**
- * UpdatesScreen component displays a list of updates and news available for the app.
- * Users can view details about each update, including the version, description,
- * key features, availability, and important notes. The updates can be expanded
- * or collapsed by tapping on them.
- *
- * @returns A React component that renders a list of updates with expandable details.
- */
 
-/*******  61daa7bc-a8b9-499e-8ba4-a0a99fdeef0d  *******/  const [expandedUpdate, setExpandedUpdate] = useState<string | null>(null);
+  const [expandedUpdate, setExpandedUpdate] = useState<string | null>(null);
 
   const toggleUpdate = (id: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
