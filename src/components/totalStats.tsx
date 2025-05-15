@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
-import {getUserRents } from '../services/rent';
+import {getUserRents,getTotalRentsByUser} from '../services/rent';
 import useUserStore from '../stores/userStore';
 
 export const UserStats = () => {
@@ -16,8 +16,8 @@ export const UserStats = () => {
 
   const fetchTotalRents = async () => {
     try {
-      const total = await getUserRents(user.id);
-      setTotalRents(total.length);
+      const total = await getTotalRentsByUser(user.id);
+      setTotalRents(total);
     } catch (error) {
       console.error('Error fetching total rents:', error);
     }
