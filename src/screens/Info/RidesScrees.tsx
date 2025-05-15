@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Image, ScrollView, TextInput } from 'react-native';
 
 const FreeRides = () => {
   const [inputCode, setInputCode] = useState('');
   const [freeRides, setFreeRides] = useState(0);
-  const VALID_CODE = 'STANDARD 20';
+  const VALID_CODE = 'MARINA10';
 
   const handleRedeem = () => {
     if (inputCode.trim().toUpperCase() === VALID_CODE) {
       setFreeRides(5);
-      Alert.alert('🎉 Congratulations!', 'You just scored 5 free rides! Enjoy your ride!');
+      Alert.alert('🎉 Congratulations!', 'Your next ride is FREE! Enjoy your ride!');
     } else {
-      Alert.alert('Oops! 🤔', 'The code you entered is invalid. Try again!');
+      Alert.alert('Oops!', 'The code you entered is invalid. Try again!');
     }
   };
 
@@ -19,8 +19,9 @@ const FreeRides = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>🎁 Special Giveaway Alert!</Text>
       <Text style={styles.paragraph}>
-        Ready to unlock some awesome free rides? Enter your promo code and ride in style, on us!
+        Ready to unlock awesome free rides? Enter your promo code and ride in style!
       </Text>
+
 
       <View style={styles.card}>
         <Image
@@ -30,7 +31,7 @@ const FreeRides = () => {
 
         <Text style={styles.cardTitle}>Redeem Your Code and Ride Free! 🚴‍♀️</Text>
         <Text style={styles.cardDescription}>
-          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait—your adventure is just a click away!
+          Enter the code at checkout, and enjoy the perks of a FREE ride. Don’t wait your adventure is just a click away!
         </Text>
 
         <TextInput
@@ -45,10 +46,6 @@ const FreeRides = () => {
           <Text style={styles.buttonText}>Claim My Rides 🚀</Text>
         </TouchableOpacity>
 
-        {freeRides > 0 && (
-          <Text style={styles.successMessage}>🎉 You’ve got {freeRides} free rides waiting for you!</Text>
-        )}
-
         <Text style={styles.validity}>Valid until May 20, 2026</Text>
       </View>
     </ScrollView>
@@ -57,7 +54,7 @@ const FreeRides = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Make ScrollView take up the full screen
+    flex: 1, 
     padding: 24,
     backgroundColor: '#FFFFFF',
   },

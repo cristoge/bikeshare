@@ -8,6 +8,9 @@ import {
   LayoutAnimation,
   Platform,
   UIManager,
+  Alert,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 
 if (Platform.OS === 'android') {
@@ -69,6 +72,7 @@ const plans: Plan[] = [
 const MembershipsScreen: React.FC = () => {
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
   const [expandedPlan, setExpandedPlan] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const togglePlan = (id: string) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -86,8 +90,27 @@ const MembershipsScreen: React.FC = () => {
     }
   };
 
+  const handleRedeem = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      Alert.alert(
+        'Our servers are on a coffee break ☕.'
+      );
+    }, 3000);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+      {loading && (
+        <Modal transparent animationType="fade">
+          <View style={styles.loadingOverlay}>
+            <ActivityIndicator size="large" color="#10B88A" />
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        </Modal>
+      )}
+
       <ScrollView contentContainerStyle={styles.container}>
         <Text style={styles.title}>Membership Plans</Text>
         <Text style={styles.paragraph}>
@@ -140,7 +163,7 @@ const MembershipsScreen: React.FC = () => {
                     • {benefit}
                   </Text>
                 ))}
-                <TouchableOpacity style={styles.joinButton}>
+                <TouchableOpacity style={styles.joinButton} onPress={handleRedeem}>
                   <Text style={styles.joinButtonText}>Join Now</Text>
                 </TouchableOpacity>
               </View>
@@ -229,6 +252,17 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loadingOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#FFFFFF',
   },
 });
 
