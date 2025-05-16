@@ -51,7 +51,7 @@ export const RecentTrips = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Recent Trips</Text>
-        <Ionicons name="navigate" size={24} color="#0FB88A" />
+        <Ionicons name="chevron-down" size={24} color="#0FB88A" />
       </View>
 
       <FlatList

@@ -76,10 +76,11 @@ export default function ReservationScreen() {
 
         <View style={styles.card}>
           <Image source={bikeIcons[model as keyof typeof bikeIcons]} style={styles.bikeImage} />
-          <Text style={styles.infoText}>Bike ID: {bikeId?.slice(0, 5)}</Text>
           <Text style={styles.infoText}>
-            <Text style={{ fontWeight: 'bold' }}>User:</Text> {userId}
+            <Text style={{ fontWeight: 'bold' }}>Model:</Text> {model}
           </Text>
+          <Text style={styles.infoText}>Bike ID: {bikeId?.slice(0, 5)}</Text>
+
         </View>
 
         <View style={styles.separator} />
@@ -101,11 +102,15 @@ export default function ReservationScreen() {
               <Text style={mode === 'rent' ? styles.activeText : styles.inactiveText}>Rent now</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.optionButton, mode === 'reserve' && styles.optionButtonActive]}
-              onPress={() => setMode('reserve')}
-            >
-              <Text style={mode === 'reserve' ? styles.activeText : styles.inactiveText}>Reserve for later</Text>
-            </TouchableOpacity>
+  style={[
+    styles.optionButton,
+    mode === 'reserve' && styles.optionButtonActive,
+    { opacity: 0.5 } // se ve medio transparente
+  ]}
+  disabled={true} // deshabilita el botón
+>
+  <Text style={[styles.inactiveText, { color: '#999' }]}>Reserve for later</Text>
+</TouchableOpacity>
           </View>
 
           {mode === 'reserve' && (
